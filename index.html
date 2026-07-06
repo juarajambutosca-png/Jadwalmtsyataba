@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Jadwal Pelajaran Anti-Bentrok MTs Tarbiyatul Banin Banat</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4338ca;
+            --primary-dark: #312e81;
+            --primary-light: #6366f1;
+            --accent: #0d9488;
+            --danger: #e11d48;
+            --danger-bg: #fef1f2;
+            --warning: #d97706;
+            --warning-bg: #fffbeb;
+            --success: #16a34a;
+            --info: #2563eb;
+            --piket: #d97706;
+            --piket-bg: #fff7e6;
+
+            --surface: #ffffff;
+            --canvas: #f3f4f9;
+            --border: #e5e7eb;
+            --border-soft: #eef0f6;
+
+            --text-dark: #1e1b3a;
+            --text-body: #3f3d56;
+            --text-mute: #8b899e;
+
+            --radius-lg: 16px;
+            --radius-md: 10px;
+            --radius-sm: 7px;
+            --shadow-sm: 0 1px 2px rgba(30, 27, 58, 0.06);
+            --shadow-md: 0 6px 20px -4px rgba(49, 46, 129, 0.12);
+            --shadow-lg: 0 16px 40px -8px rgba(49, 46, 129, 0.18);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #c7c9de; border-radius: 10px; border: 2px solid transparent; background-clip: content-box; }
+        ::-webkit-scrollbar-thumb:hover { background: #a8abce; background-clip: content-box; }
+
+        body {
+            background:
+                radial-gradient(1100px 500px at 100% -10%, #eef0ff 0%, rgba(238,240,255,0) 60%),
+                var(--canvas);
+            color: var(--text-body);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(120deg, var(--primary-dark) 0%, var(--primary) 55%, var(--primary-light) 100%);
+            color: white;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 2px 10px rgba(49, 46, 129, 0.18);
+            flex-wrap: wrap;
+        }
+
+        header h1 {
+            font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        header h1 .subtitle {
+            display: block;
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            font-weight: 500;
+            opacity: 0.75;
+            margin-top: 2px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 9px 16px;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12.5px;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, opacity 0.15s ease;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+            white-space: nowrap;
+        }
+
+        .btn:not(:disabled):hover {
+            transform: translateY(-1px);
+        }
+        .btn:not(:disabled):active {
+            transform: translateY(0);
+        }
+
+        .btn-primary { background: rgba(255,255,255,0.14); color: white; border: 1px solid rgba(255,255,255,0.35); backdrop-filter: blur(4px); }
+        .btn-primary:hover { background: rgba(255,255,255,0.24); }
+
+        .btn-success { background: linear-gradient(135deg, #22c55e, #16a34a); color: white; }
+        .btn-success:not(:disabled):hover { box-shadow: 0 6px 16px rgba(22, 163, 74, 0.4); }
+        .btn-success:disabled { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.55); box-shadow: none; }
+
+        .btn-danger { background: rgba(0,0,0,0.18); color: white; border: 1px solid rgba(255,255,255,0.2); }
+        .btn-danger:hover { background: rgba(0,0,0,0.3); }
+
+        .main-container {
+            display: flex;
+            flex: 1;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 18px 22px 22px;
+            gap: 14px;
+        }
+
+        .navbar-classes {
+            display: flex;
+            gap: 8px;
+            background: var(--surface);
+            padding: 8px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-soft);
+            flex-wrap: wrap;
+        }
+
+        .class-tab {
+            padding: 9px 16px;
+            background: #f3f4f9;
+            color: var(--text-body);
+            border: 1px solid transparent;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.15s ease;
+        }
+
+        .class-tab:hover {
+            background: #e8e9f5;
+            transform: translateY(-1px);
+        }
+
+        .class-tab.active {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            box-shadow: 0 4px 12px rgba(67, 56, 202, 0.35);
+        }
+
+        .class-tab.btn-dashboard {
+            background: #eef0ff;
+            color: var(--primary-dark);
+            border: 1px solid #dcdffb;
+        }
+        .class-tab.btn-dashboard:hover { background: #e2e5ff; }
+        .class-tab.btn-dashboard.active {
+            background: linear-gradient(135deg, var(--info), #3b82f6);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+        }
+
+        .class-tab.btn-piket-tab {
+            background: var(--piket-bg);
+            color: #b45309;
+            border: 1px solid #fbdca0;
+        }
+        .class-tab.btn-piket-tab:hover { background: #ffefc7; }
+        .class-tab.btn-piket-tab.active {
+            background: linear-gradient(135deg, #f59e0b, var(--piket));
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.35);
+        }
+
+        .class-tab.btn-guru-tab {
+            background: #e6f7f5;
+            color: #0f766e;
+            border: 1px solid #b9ece5;
+        }
+        .class-tab.btn-guru-tab:hover { background: #d7f3ef; }
+        .class-tab.btn-guru-tab.active {
+            background: linear-gradient(135deg, #14b8a6, var(--accent));
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.35);
+        }
+
+        /* Alert Panel for Conflicts */
+        .conflict-panel {
+            background: var(--danger-bg);
+            border: 1px solid #fecdd3;
+            border-left: 4px solid var(--danger);
+            padding: 12px 14px;
+            border-radius: var(--radius-md);
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            max-height: 200px;
+            overflow-y: auto;
+            animation: slideDown 0.2s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .conflict-panel h4 {
+            color: var(--danger);
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .conflict-item {
+            font-size: 12.5px;
+            color: #9f1239;
+            line-height: 1.5;
+            padding: 4px 0;
+            border-bottom: 1px dashed rgba(225, 29, 72, 0.1);
+        }
+        .conflict-item b { color: #881337; }
+
+        /* Template Indicator Notice */
+        .template-badge {
+            background-color: #eaf2ff;
+            color: #1d4ed8;
+            padding: 11px 16px;
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            font-weight: 500;
+            border: 1px solid #d3e2fd;
+            border-left: 4px solid var(--info);
+            transition: all 0.2s ease;
+        }
+
+        /* Schedule Table Grid Layout */
+        .table-container {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-soft);
+            overflow-x: auto;
+            padding: 18px;
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .table-container h2 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text-dark);
+            letter-spacing: -0.01em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        th, td {
+            border-bottom: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+            padding: 9px 8px;
+            min-width: 100px;
+            color: var(--text-body);
+        }
+
+        tbody tr:hover td {
+            background-color: #f7f8ff;
+        }
+        tbody tr:hover td:first-child,
+        tbody tr:hover td.time-col {
+            background-color: #eef0ff;
+        }
+
+        th {
+            background: linear-gradient(180deg, var(--primary-dark), var(--primary));
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 12px;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+            border-right: 1px solid rgba(255,255,255,0.12);
+            border-bottom: none;
+        }
+
+        td:first-child {
+            background: #eef0f6;
+            color: var(--text-dark);
+            font-weight: 700;
+            min-width: 60px;
+        }
+
+        th:first-child {
+            background: linear-gradient(180deg, var(--primary-dark), var(--primary));
+            color: #ffffff;
+        }
+
+        .time-col {
+            min-width: 90px;
+            font-size: 11.5px;
+            font-weight: 600;
+            background: #f6f7fb;
+            color: var(--text-mute);
+        }
+
+        .cell-input {
+            width: 100%;
+            border: 1.5px solid transparent;
+            padding: 7px 4px;
+            text-align: center;
+            font-weight: 700;
+            text-transform: uppercase;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.15s ease;
+            background: transparent;
+            color: var(--text-dark);
+        }
+
+        .cell-input::placeholder { color: var(--text-mute); font-weight: 500; }
+
+        .cell-input:hover {
+            background: #f6f7fb;
+        }
+
+        .cell-input:focus {
+            border-color: var(--accent);
+            background: #fff;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+        }
+
+        .cell-break {
+            background-color: var(--piket-bg) !important;
+            color: #b45309;
+            font-weight: 600;
+            font-size: 11.5px;
+            vertical-align: middle;
+            letter-spacing: 0.02em;
+        }
+
+        .cell-conflict {
+            background-color: var(--danger-bg) !important;
+            border: 1.5px solid var(--danger) !important;
+            color: var(--danger) !important;
+            animation: pulseConflict 1.4s ease-in-out infinite;
+        }
+
+        @keyframes pulseConflict {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.25); }
+            50% { box-shadow: 0 0 0 4px rgba(225, 29, 72, 0.08); }
+        }
+
+        .hint-text {
+            font-size: 11.5px;
+            color: var(--text-mute);
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Dashboard Styles */
+        .dashboard-container {
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+        }
+
+        .dashboard-container h3 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 700;
+            color: var(--text-dark);
+            font-size: 15px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+        }
+
+        .stat-card {
+            background: linear-gradient(160deg, #ffffff, #f8f9ff);
+            border: 1px solid var(--border-soft);
+            border-radius: var(--radius-md);
+            padding: 18px;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-card > div:first-child {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--text-mute);
+        }
+
+        .stat-val {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-top: 6px;
+            letter-spacing: -0.02em;
+        }
+
+        .teacher-progress {
+            margin-top: 10px;
+            background: #e7e8f5;
+            height: 7px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #22c55e, #16a34a);
+            width: 0%;
+            border-radius: 4px;
+            transition: width 0.4s ease;
+        }
+
+        .badge-dash {
+            padding: 3px 9px;
+            border-radius: 20px;
+            font-size: 11px;
+            color: white;
+            font-weight: 700;
+            display: inline-block;
+            letter-spacing: 0.01em;
+        }
+        .bg-done { background: linear-gradient(135deg, #22c55e, var(--success)); }
+        .bg-over { background: linear-gradient(135deg, #fb7185, var(--danger)); }
+        .bg-warning { background: linear-gradient(135deg, #fbbf24, var(--warning)); }
+
+        .cell-zero {
+            color: #c7c9de;
+            font-weight: 500;
+        }
+
+        /* Responsive tweaks */
+        @media (max-width: 860px) {
+            header { flex-direction: column; align-items: flex-start; }
+            .header-actions { width: 100%; }
+            .btn { flex: 1; justify-content: center; }
+            .content { padding: 14px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>
+            🗓️ <span>Pembina Jadwal MTs Tarbiyatul Banin Banat Alasdowo
+                <span class="subtitle">Editor Jadwal Anti-Bentrok &amp; Analitik Jam Mengajar Guru</span>
+            </span>
+        </h1>
+        <div class="header-actions">
+            <input type="file" id="upload-excel" accept=".xlsx, .xls" style="display: none;" onchange="importExcel(event)">
+            <button class="btn btn-primary" onclick="document.getElementById('upload-excel').click()">📥 1. Upload Form Jadwal Pelajaran 2026-2027.xlsx</button>
+            <button class="btn btn-success" id="btn-export" onclick="exportSmartExcel()" disabled style="cursor: not-allowed;">💾 2. Download Excel (Smart Export)</button>
+            <button class="btn btn-danger" onclick="clearAll()">🔄 Reset</button>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <div class="content">
+            <div class="template-badge" id="template-badge">
+                💡 <b>Mode Smart Export Aktif:</b> Silakan unggah berkas <u>Form Jadwal Pelajaran 2026-2027.xlsx</u> Anda terlebih dahulu untuk mengaktifkan sistem editor.
+            </div>
+
+            <div class="navbar-classes" id="class-tabs-container">
+                </div>
+
+            <div class="conflict-panel" id="conflict-panel">
+                <h4>⚠️ Terdeteksi Peringatan Sistem Validasi:</h4>
+                <div id="conflict-list"></div>
+            </div>
+
+            <div class="table-container" id="main-workspace-container">
+                </div>
+        </div>
+    </div>
+
+    <script>
+        let classes = ["VII", "VIII A", "VIII B", "IX A", "IX B"];
+        let allTabs = ["VII", "VIII A", "VIII B", "IX A", "IX B", "PIKET"];
+        let currentClass = "DASHBOARD"; 
+        let importedWorkbook = null;
+        let targetSheetName = "";
+
+        let modifiedClasses = {
+            "VII": false, "VIII A": false, "VIII B": false, "IX A": false, "IX B": false, "PIKET": false
+        };
+
+        const classRowMapping = {
+            "VII": 7, "VIII A": 19, "VIII B": 31, "IX A": 43, "IX B": 55, "PIKET": 67
+        };
+
+        const dayColMapping = {
+            "Sabtu": 3, "Ahad": 4, "Senin": 5, "Selasa": 6, "Rabu": 7, "Kamis": 8
+        };
+
+        const jamOffsetMapping = {
+            1: 0, 2: 1, 3: 2, 4: 3, 5: 5, 6: 6, 7: 7, 8: 9, 9: 10
+        };
+
+        const piketOffsetMapping = {
+            0: 0, 1: 1, 2: 2, 3: 3, 5: 5, 6: 6, 7: 7, 8: 9, 9: 10
+        };
+
+        const timeSlots = [
+            { jam: 1, waktu: "06.50-07.35", isBreak: false },
+            { jam: 2, waktu: "07.35-08.10", isBreak: false },
+            { jam: 3, waktu: "08.10-08.45", isBreak: false },
+            { jam: 4, waktu: "08.45-09.20", isBreak: false },
+            { jam: "-", waktu: "09.20-10.00", isBreak: true, label: "ISTIRAHAT / MBG" },
+            { jam: 5, waktu: "10.00-10.35", isBreak: false },
+            { jam: 6, waktu: "10.35-11.10", isBreak: false },
+            { jam: 7, waktu: "11.10-11.45", isBreak: false },
+            { jam: "-", waktu: "11.45-12.20", isBreak: true, label: "SHOLAT JAMA'AH" },
+            { jam: 8, waktu: "12.20-12.40", isBreak: false },
+            { jam: 9, waktu: "12.40-13.15", isBreak: false }
+        ];
+
+        const piketTimeSlots = [
+            { jam: 0, waktu: "06.30-07.00", isBreak: false },
+            { jam: 1, waktu: "06.50-07.35", isBreak: false },
+            { jam: 2, waktu: "07.35-08.10", isBreak: false },
+            { jam: 3, waktu: "08.10-08.45", isBreak: false },
+            { jam: 4, waktu: "08.45-09.20", isBreak: false },
+            { jam: "-", waktu: "09.20-10.00", isBreak: true, label: "ISTIRAHAT" },
+            { jam: 5, waktu: "10.00-10.35", isBreak: false },
+            { jam: 6, waktu: "10.35-11.10", isBreak: false },
+            { jam: 7, waktu: "11.10-11.45", isBreak: false },
+            { jam: "-", waktu: "11.45-12.20", isBreak: true, label: "SHOLAT JAMA'AH" },
+            { jam: 8, waktu: "12.20-12.40", isBreak: false },
+            { jam: 9, waktu: "12.40-13.15", isBreak: false }
+        ];
+
+        const days = ["Sabtu", "Ahad", "Senin", "Selasa", "Rabu", "Kamis"];
+
+        let defaultTeachers = [
+            {"kg": "A", "nama": "M. Syakroni, S.Pd.I", "mapel": "Fiqih", "quota": {"VII": 2, "VIII A": 2, "VIII B": 2, "IX A": 0, "IX B": 0}, "total": 6},
+            {"kg": "B", "nama": "H. Ahmad Romlan", "mapel": "Hadits", "quota": {"VII": 2, "VIII A": 2, "VIII B": 2, "IX A": 2, "IX B": 2}, "total": 10},
+            {"kg": "C", "nama": "H. Ahmad Suyuthi", "mapel": "Taqrib", "quota": {"VII": 0, "VIII A": 0, "VIII B": 0, "IX A": 2, "IX B": 2}, "total": 4},
+            {"kg": "D1", "nama": "M Farid Bustomi,S.Pd.I", "mapel": "Fiqih", "quota": {"VII": 0, "VIII A": 0, "VIII B": 0, "IX A": 2, "IX B": 2}, "total": 4},
+            {"kg": "D2", "nama": "M Farid Bustomi,S.Pd.I", "mapel": "Taqrib", "quota": {"VII": 2, "VIII A": 2, "VIII B": 2, "IX A": 0, "IX B": 0}, "total": 6},
+            {"kg": "D3", "nama": "M Farid Bustomi,S.Pd.I", "mapel": "Fasholatan", "quota": {"VII": 2, "VIII A": 0, "VIII B": 0, "IX A": 0, "IX B": 0}, "total": 2},
+            {"kg": "E", "nama": "Drs. Ali Imron", "mapel": "Pkn", "quota": {"VII": 0, "VIII A": 0, "VIII B": 0, "IX A": 2, "IX B": 2}, "total": 4},
+            {"kg": "F", "nama": "Zainul Hasan, S.Pd.I", "mapel": "IPA", "quota": {"VII": 3, "VIII A": 4, "VIII B": 4, "IX A": 4, "IX B": 4}, "total": 19},
+            {"kg": "G", "nama": "Rubi'ah, S.Sos", "mapel": "IPS", "quota": {"VII": 4, "VIII A": 4, "VIII B": 4, "IX A": 4, "IX B": 4}, "total": 20},
+            {"kg": "H", "nama": "M. Syafiq", "mapel": "Informatika", "quota": {"VII": 2, "VIII A": 2, "VIII B": 2, "IX A": 2, "IX B": 2}, "total": 10},
+            {"kg": "I", "nama": "Yuyun Eva Nauli, S.Pd.I", "mapel": "Bahasa Indonesia", "quota": {"VII": 4, "VIII A": 4, "VIII B": 4, "IX A": 4, "IX B": 4}, "total": 20},
+            {"kg": "J1", "nama": "Nurul Winayanti, S.Pd.I", "mapel": "Qur'an Hadits", "quota": {"VII": 2, "VIII A": 2, "VIII B": 2, "IX A": 2, "IX B": 2}, "total": 10},
+            {"kg": "J2", "nama": "Nurul Winayanti, S.Pd.I", "mapel": "Akidah Akhlak", "quota": {"VII": 2, "VIII A": 2, "VIII B": 2, "IX A": 0, "IX B": 0}, "total": 6},
+            {"kg": "K", "nama": "Ummi Khoiriyah, S.S", "mapel": "Bahasa Inggris", "quota": {"VII": 3, "VIII A": 4, "VIII B": 4, "IX A": 4, "IX B": 4}, "total": 19},
+            {"kg": "L", "nama": "H. Nur Fatikhin, S.Pd.I", "mapel": "Matematika", "quota": {"VII": 4, "VIII A": 0, "VIII B": 0, "IX A": 0, "IX B": 0}, "total": 4},
+            {"kg": "M", "nama": "Ruklimah, S.Pd", "mapel": "Matematika", "quota": {"VII": 0, "VIII A": 4, "VIII B": 4, "IX A": 4, "IX B": 4}, "total": 16},
+            {"kg": "N1", "nama": "Muh Qosim", "mapel": "Akidah Akhlak", "quota": {"VII": 0, "VIII A": 0, "VIII B": 0, "IX A": 2, "IX B": 2}, "total": 4},
+            {"kg": "N2", "nama": "Muh Qosim", "mapel": "Ta'lim", "quota": {"VII": 2, "VIII A": 0, "VIII B": 0, "IX A": 0, "IX B": 0}, "total": 2},
+            {"kg": "O", "nama": "Ah. Jalaluddin", "mapel": "Tafsir", "quota": {"VII": 2, "VIII A": 2, "VIII B": 2, "IX A": 2, "IX B": 2}, "total": 10},
+            {"kg": "P1", "nama": "Miftahul Rois, S,Pd.I", "mapel": "Ta'lim", "quota": {"VII": 0, "VIII A": 0, "VIII B": 0, "IX A": 2, "IX B": 2}, "total": 4},
+            {"kg": "P2", "nama": "Miftahul Rois, S,Pd.I", "mapel": "Nahwu", "quota": {"VII": 2, "VIII A": 2, "VIII B": 2, "IX A": 0, "IX B": 0}, "total": 6},
+            {"kg": "Q", "nama": "Abdul Malik", "mapel": "Nahwu", "quota": {"VII": 0, "VIII A": 0, "VIII B": 0, "IX A": 2, "IX B": 2}, "total": 4},
+            {"kg": "R", "nama": "H. Mustaghfirin, S.Pd.I", "mapel": "Ta'lim", "quota": {"VII": 0, "VIII A": 2, "VIII B": 2, "IX A": 0, "IX B": 0}, "total": 4},
+            {"kg": "S", "nama": "Yuyun Eva Maulin, S.Pd.I", "mapel": "Bahasa Arab", "quota": {"VII": 2, "VIII A": 2, "VIII B": 2, "IX A": 2, "IX B": 2}, "total": 10},
+            {"kg": "T", "nama": "Moh Miftahuddin, S.Pd", "mapel": "Bahasa Jawa", "quota": {"VII": 2, "VIII A": 2, "VIII B": 2, "IX A": 2, "IX B": 2}, "total": 10},
+            {"kg": "U", "nama": "M Faisal Majid, S.Or", "mapel": "PJOK", "quota": {"VII": 2, "VIII A": 2, "VIII B": 2, "IX A": 2, "IX B": 2}, "total": 10},
+            {"kg": "V", "nama": "Azmul Riza", "mapel": "Pkn", "quota": {"VII": 2, "VIII A": 2, "VIII B": 2, "IX A": 0, "IX B": 0}, "total": 6},
+            {"kg": "W1", "nama": "Khotibul Umam, S.Pd.I", "mapel": "SKI", "quota": {"VII": 2, "VIII A": 2, "VIII B": 2, "IX A": 2, "IX B": 2}, "total": 10},
+            {"kg": "W2", "nama": "Khotibul Umam, S.Pd.I", "mapel": "Seni Budaya", "quota": {"VII": 2, "VIII A": 2, "VIII B": 2, "IX A": 2, "IX B": 2}, "total": 10}
+        ];
+
+        function calcTotal(t) {
+            return classes.reduce((acc, c) => acc + (Number(t.quota[c]) || 0), 0);
+        }
+
+        function loadTeachers() {
+            const saved = localStorage.getItem('mts_teachers_data');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+                } catch (e) { }
+            }
+            return JSON.parse(JSON.stringify(defaultTeachers));
+        }
+
+        function saveTeachers() {
+            localStorage.setItem('mts_teachers_data', JSON.stringify(teachers));
+        }
+
+        let teachers = loadTeachers();
+        let scheduleStore = {};
+
+        function initStore() {
+            allTabs.forEach(t => {
+                scheduleStore[t] = {};
+                let currentSlots = (t === "PIKET") ? piketTimeSlots : timeSlots;
+                currentSlots.forEach(ts => {
+                    if(!ts.isBreak) {
+                        scheduleStore[t][ts.jam] = {};
+                        days.forEach(d => { scheduleStore[t][ts.jam][d] = ""; });
+                    }
+                });
+            });
+            Object.keys(modifiedClasses).forEach(k => modifiedClasses[k] = false);
+        }
+
+        if (localStorage.getItem('mts_schedule_data')) {
+            scheduleStore = JSON.parse(localStorage.getItem('mts_schedule_data'));
+            if(localStorage.getItem('mts_modified_flags')) {
+                modifiedClasses = JSON.parse(localStorage.getItem('mts_modified_flags'));
+            }
+        } else {
+            initStore();
+        }
+
+        function initApp() {
+            renderTabs();
+            renderWorkspace();
+            validateAll();
+            
+            if(sessionStorage.getItem('excel_loaded')) {
+                enableExportButton();
+            }
+        }
+
+        function enableExportButton() {
+            const btn = document.getElementById('btn-export');
+            btn.disabled = false;
+            btn.style.opacity = "1";
+            btn.style.cursor = "pointer";
+            document.getElementById('template-badge').innerHTML = "🎉 <b>Template Excel Terkunci!</b> Hasil Smart Export akan mengganti sel yang Anda edit saja, area lain tetap 100% identik asli.";
+            document.getElementById('template-badge').style.backgroundColor = "#d4edda";
+            document.getElementById('template-badge').style.color = "#155724";
+            document.getElementById('template-badge').style.borderLeft = "5px solid var(--success)";
+        }
+
+        function renderTabs() {
+            const container = document.getElementById('class-tabs-container');
+            container.innerHTML = "";
+            
+            const dashBtn = document.createElement('button');
+            dashBtn.className = `class-tab btn-dashboard ${currentClass === 'DASHBOARD' ? 'active' : ''}`;
+            dashBtn.innerHTML = "📊 Dashboard & Statistik Guru";
+            dashBtn.onclick = () => {
+                currentClass = "DASHBOARD";
+                renderTabs();
+                renderWorkspace();
+            };
+            container.appendChild(dashBtn);
+
+            classes.forEach(c => {
+                const btn = document.createElement('button');
+                btn.className = `class-tab ${c === currentClass ? 'active' : ''}`;
+                btn.innerText = `Kelas ${c} ${modifiedClasses[c] ? '✍️' : ''}`;
+                btn.onclick = () => {
+                    currentClass = c;
+                    renderTabs();
+                    renderWorkspace();
+                };
+                container.appendChild(btn);
+            });
+
+            const piketBtn = document.createElement('button');
+            piketBtn.className = `class-tab btn-piket-tab ${currentClass === 'PIKET' ? 'active' : ''}`;
+            piketBtn.innerHTML = `📌 Tabel Piket Guru ${modifiedClasses['PIKET'] ? '✍️' : ''}`;
+            piketBtn.onclick = () => {
+                currentClass = "PIKET";
+                renderTabs();
+                renderWorkspace();
+            };
+            container.appendChild(piketBtn);
+
+            const guruBtn = document.createElement('button');
+            guruBtn.className = `class-tab btn-guru-tab ${currentClass === 'GURU' ? 'active' : ''}`;
+            guruBtn.innerHTML = `🧑‍🏫 Kelola Data Guru &amp; Kuota`;
+            guruBtn.onclick = () => {
+                currentClass = "GURU";
+                renderTabs();
+                renderWorkspace();
+            };
+            container.appendChild(guruBtn);
+        }
+
+        function renderWorkspace() {
+            const container = document.getElementById('main-workspace-container');
+            container.innerHTML = "";
+
+            if (currentClass === "DASHBOARD") {
+                renderDashboard(container);
+            } else if (currentClass === "PIKET") {
+                renderPiketTable(container);
+            } else if (currentClass === "GURU") {
+                renderGuruEditor(container);
+            } else {
+                renderScheduleTable(container);
+            }
+        }
+
+        function renderDashboard(container) {
+            let totalQuotaSemuaGuru = teachers.reduce((acc, curr) => acc + calcTotal(curr), 0);
+            
+            let hitungRealisasi = {};
+            teachers.forEach(t => {
+                hitungRealisasi[t.kg] = {
+                    globalTotal: 0,
+                    breakdown: { "VII": 0, "VIII A": 0, "VIII B": 0, "IX A": 0, "IX B": 0 }
+                };
+            });
+            
+            let jamTerisiGlobal = 0;
+            classes.forEach(c => {
+                timeSlots.forEach(ts => {
+                    if(!ts.isBreak) {
+                        days.forEach(d => {
+                            let val = (scheduleStore[c][ts.jam][d] || "").toUpperCase().trim();
+                            if(val && hitungRealisasi[val] !== undefined) {
+                                hitungRealisasi[val].breakdown[c] += 1;
+                                hitungRealisasi[val].globalTotal += 1;
+                                jamTerisiGlobal += 1;
+                            }
+                        });
+                    }
+                });
+            });
+
+            let uniqueTeacherNames = new Set(teachers.map(t => t.nama.trim()));
+            let realTeacherCount = uniqueTeacherNames.size;
+            let persenGlobal = Math.round((jamTerisiGlobal / totalQuotaSemuaGuru) * 100) || 0;
+
+            let dashHTML = `
+                <div class="dashboard-container">
+                    <h2>📊 Analitik & Ringkasan Pemenuhan Jam Mengajar Guru</h2>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div>Total Jam Mengajar Terisi (Global)</div>
+                            <div class="stat-val">${jamTerisiGlobal} / ${totalQuotaSemuaGuru} JP</div>
+                            <div class="teacher-progress" style="margin-top:10px;">
+                                <div class="progress-bar" style="width: ${persenGlobal}%;"></div>
+                            </div>
+                            <div style="font-size:11px; margin-top:4px; text-align:right;">${persenGlobal}% Selesai</div>
+                        </div>
+                        <div class="stat-card">
+                            <div>Total Guru Fisik Aktif</div>
+                            <div class="stat-val">${realTeacherCount} Orang</div>
+                        </div>
+                        <div class="stat-card">
+                            <div>Rombongan Belajar (Rombel)</div>
+                            <div class="stat-val">${classes.length} Rombel + 1 Piket</div>
+                        </div>
+                    </div>
+
+                    <h3 style="margin-top: 10px;">📋 Ringkasan Jam Tiap Kelas Bagi Gurunya (Realisasi / Kuota)</h3>
+                    <div class="hint-text" style="margin-top:-4px;">
+                        Angka ditulis <b>realisasi/kuota</b> tiap kelas &nbsp;
+                        <span style="color:var(--success); font-weight:700;">■</span> pas &nbsp;
+                        <span style="color:var(--warning); font-weight:700;">■</span> kurang &nbsp;
+                        <span style="color:var(--danger); font-weight:700;">■</span> lebih
+                    </div>
+                    <table style="margin-top: 8px;">
+                        <thead>
+                            <tr>
+                                <th rowspan="2">Kode</th>
+                                <th rowspan="2">Nama</th>
+                                <th rowspan="2">Mata Pelajaran</th>
+                                <th colspan="5">Kelas (Realisasi/Kuota)</th>
+                                <th rowspan="2">Jumlah (Realisasi)</th>
+                                <th rowspan="2">Target Kuota</th>
+                                <th rowspan="2">Status Pemenuhan</th>
+                            </tr>
+                            <tr>
+                                <th>VII</th>
+                                <th>VIII A</th>
+                                <th>VIII B</th>
+                                <th>IX A</th>
+                                <th>IX B</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            function classCell(realitas, t, c) {
+                let real = realitas.breakdown[c] || 0;
+                let target = Number(t.quota[c]) || 0;
+                if (real === 0 && target === 0) return `<span class="cell-zero">–</span>`;
+                let color = "var(--warning)";
+                if (real === target) color = "var(--success)";
+                else if (real > target) color = "var(--danger)";
+                return `<span style="color:${color}; font-weight:700;">${real}</span><span style="color:var(--text-mute); font-weight:500;">/${target}</span>`;
+            }
+
+            teachers.forEach(t => {
+                let realitas = hitungRealisasi[t.kg] || { globalTotal: 0, breakdown: { "VII":0, "VIII A":0, "VIII B":0, "IX A":0, "IX B":0 } };
+                let terisi = realitas.globalTotal;
+                let totalKuota = calcTotal(t);
+                
+                let statusBadge = "";
+                if (terisi === totalKuota) {
+                    statusBadge = `<span class="badge-dash bg-done">Pas</span>`;
+                } else if (terisi > totalKuota) {
+                    statusBadge = `<span class="badge-dash bg-over">+${terisi - totalKuota} JP</span>`;
+                } else {
+                    statusBadge = `<span class="badge-dash bg-warning">-${totalKuota - terisi} JP</span>`;
+                }
+
+                dashHTML += `
+                    <tr>
+                        <td style="font-weight:bold; background:#f8f9fa;">${t.kg}</td>
+                        <td style="text-align:left; padding-left:10px; font-weight: 500;">${t.nama}</td>
+                        <td style="text-align:left; padding-left:10px; color:#555;">${t.mapel}</td>
+                        <td>${classCell(realitas, t, "VII")}</td>
+                        <td>${classCell(realitas, t, "VIII A")}</td>
+                        <td>${classCell(realitas, t, "VIII B")}</td>
+                        <td>${classCell(realitas, t, "IX A")}</td>
+                        <td>${classCell(realitas, t, "IX B")}</td>
+                        <td style="font-weight:bold; color:var(--info); background:#f1f2f6;">${terisi} JP</td>
+                        <td style="font-weight:bold; color:var(--primary);">${totalKuota} JP</td>
+                        <td>${statusBadge}</td>
+                    </tr>
+                `;
+            });
+
+            dashHTML += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            container.innerHTML = dashHTML;
+        }
+
+        function renderScheduleTable(container) {
+            let tableHTML = `
+                <h2>🗓️ Jadwal Pelajaran Kelas ${currentClass}</h2>
+                <table style="margin-top:10px;">
+                    <thead>
+                        <tr>
+                            <th>Jam</th>
+                            <th>Waktu</th>
+                            <th>Sabtu</th>
+                            <th>Ahad</th>
+                            <th>Senin</th>
+                            <th>Selasa</th>
+                            <th>Rabu</th>
+                            <th>Kamis</th>
+                        </tr>
+                    </thead>
+                    <tbody id="schedule-tbody"></tbody>
+                </table>
+                <div class="hint-text">*Isikan cell dengan KODE GURU (KG). Contoh: A, B, D1, F, dll. Kosongkan jika kosong.</div>
+            `;
+            container.innerHTML = tableHTML;
+
+            const tbody = document.getElementById('schedule-tbody');
+            timeSlots.forEach(ts => {
+                const tr = document.createElement('tr');
+                
+                const tdJam = document.createElement('td');
+                tdJam.innerText = ts.jam;
+                tr.appendChild(tdJam);
+
+                const tdWaktu = document.createElement('td');
+                tdWaktu.className = "time-col";
+                tdWaktu.innerText = ts.waktu;
+                tr.appendChild(tdWaktu);
+
+                if (ts.isBreak) {
+                    const tdBreak = document.createElement('td');
+                    tdBreak.colSpan = days.length;
+                    tdBreak.className = "cell-break";
+                    tdBreak.innerText = `☕ ${ts.label} ☕`;
+                    tr.appendChild(tdBreak);
+                } else {
+                    days.forEach(day => {
+                        const td = document.createElement('td');
+                        const val = scheduleStore[currentClass][ts.jam][day] || "";
+                        
+                        const input = document.createElement('input');
+                        input.type = "text";
+                        input.className = "cell-input";
+                        input.value = val;
+                        input.dataset.jam = ts.jam;
+                        input.dataset.day = day;
+
+                        input.oninput = (e) => handleInputChange(e.target, ts.jam, day);
+
+                        td.appendChild(input);
+                        tr.appendChild(td);
+                    });
+                }
+                tbody.appendChild(tr);
+            });
+            validateAll(); 
+        }
+
+        function renderPiketTable(container) {
+            let tableHTML = `
+                <h2>📌 Pengaturan Pembagian Piket Harian Guru</h2>
+                <table style="margin-top:10px;">
+                    <thead>
+                        <tr>
+                            <th style="background-color:#e67e22;">Jam</th>
+                            <th style="background-color:#e67e22;">Waktu</th>
+                            <th style="background-color:#e67e22;">Sabtu</th>
+                            <th style="background-color:#e67e22;">Ahad</th>
+                            <th style="background-color:#e67e22;">Senin</th>
+                            <th style="background-color:#e67e22;">Selasa</th>
+                            <th style="background-color:#e67e22;">Rabu</th>
+                            <th style="background-color:#e67e22;">Kamis</th>
+                        </tr>
+                    </thead>
+                    <tbody id="schedule-tbody"></tbody>
+                </table>
+                <div class="hint-text">*Isikan kode guru bertugas harian. Sistem otomatis mengunci dan mendeteksi bentrok jika guru tersebut sedang mengajar di kelas lain.</div>
+            `;
+            container.innerHTML = tableHTML;
+
+            const tbody = document.getElementById('schedule-tbody');
+            piketTimeSlots.forEach(ts => {
+                const tr = document.createElement('tr');
+                
+                const tdJam = document.createElement('td');
+                tdJam.innerText = ts.jam;
+                tr.appendChild(tdJam);
+
+                const tdWaktu = document.createElement('td');
+                tdWaktu.className = "time-col";
+                tdWaktu.innerText = ts.waktu;
+                tr.appendChild(tdWaktu);
+
+                if (ts.isBreak) {
+                    const tdBreak = document.createElement('td');
+                    tdBreak.colSpan = days.length;
+                    tdBreak.className = "cell-break";
+                    tdBreak.innerText = `☕ ${ts.label} ☕`;
+                    tr.appendChild(tdBreak);
+                } else {
+                    days.forEach(day => {
+                        const td = document.createElement('td');
+                        const val = scheduleStore["PIKET"][ts.jam][day] || "";
+                        
+                        const input = document.createElement('input');
+                        input.type = "text";
+                        input.className = "cell-input";
+                        input.value = val;
+                        input.dataset.jam = ts.jam;
+                        input.dataset.day = day;
+
+                        input.oninput = (e) => handleInputChange(e.target, ts.jam, day);
+
+                        td.appendChild(input);
+                        tr.appendChild(td);
+                    });
+                }
+                tbody.appendChild(tr);
+            });
+            validateAll(); 
+        }
+
+        /* ===================== EDITOR DATA GURU & KUOTA ===================== */
+
+        function renderGuruEditor(container) {
+            let html = `
+                <div class="dashboard-container">
+                    <h2>🧑‍🏫 Kelola Data Guru & Kuota Mengajar</h2>
+                    <div class="template-badge" style="background:#e6f7f5; color:#0f766e; border-left-color:var(--accent);">
+                        ✏️ Ubah kode guru (KG), nama, mata pelajaran, and kuota jam per kelas di sini. <b>Kolom "Total" dihitung otomatis</b> dari kuota tiap kelas. Jangan lupa klik <b>Simpan Data Guru</b>.
+                    </div>
+                    <div style="overflow-x:auto;">
+                    <table style="margin-top:8px;" id="guru-editor-table">
+                        <thead>
+                            <tr>
+                                <th style="min-width:80px;">Kode</th>
+                                <th style="min-width:230px;">Nama Guru</th>
+                                <th style="min-width:170px;">Mata Pelajaran</th>
+                                <th>VII</th><th>VIII A</th><th>VIII B</th><th>IX A</th><th>IX B</th>
+                                <th style="min-width:100px;">Total (Otomatis)</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="guru-editor-tbody"></tbody>
+                    </table>
+                    </div>
+                    <div style="display:flex; gap:10px; margin-top:16px; flex-wrap:wrap;">
+                        <button class="btn btn-primary" style="background:var(--info); color:white; box-shadow:none;" onclick="addGuruRow()">➕ Tambah Guru</button>
+                        <button class="btn btn-success" onclick="saveGuruEditor()">💾 Simpan Data Guru</button>
+                        <button class="btn btn-danger" onclick="resetGuruDefault()">↩️ Kembalikan ke Default</button>
+                    </div>
+                    <div class="hint-text">*Kode Guru (KG) harus unik — kode inilah yang diketik di kolom jadwal &amp; tabel piket. Hapus baris lalu klik Simpan untuk menghapus guru tersebut.</div>
+                </div>
+            `;
+            container.innerHTML = html;
+            const tbody = document.getElementById('guru-editor-tbody');
+            teachers.forEach(t => tbody.appendChild(buildGuruRow(t)));
+        }
+
+        function buildGuruRow(t) {
+            const tr = document.createElement('tr');
+            const q = t.quota || {};
+            tr.innerHTML = `
+                <td><input type="text" class="cell-input g-kode" value="${t.kg || ''}" style="font-size:13px;"></td>
+                <td><input type="text" class="cell-input g-nama" value="${(t.nama || '').replace(/"/g,'&quot;')}" style="text-transform:none; text-align:left; font-weight:500; font-size:13px;"></td>
+                <td><input type="text" class="cell-input g-mapel" value="${(t.mapel || '').replace(/"/g,'&quot;')}" style="text-transform:none; text-align:left; font-size:13px;"></td>
+                <td><input type="number" min="0" class="cell-input g-quota" data-cls="VII" value="${q['VII'] || 0}"></td>
+                <td><input type="number" min="0" class="cell-input g-quota" data-cls="VIII A" value="${q['VIII A'] || 0}"></td>
+                <td><input type="number" min="0" class="cell-input g-quota" data-cls="VIII B" value="${q['VIII B'] || 0}"></td>
+                <td><input type="number" min="0" class="cell-input g-quota" data-cls="IX A" value="${q['IX A'] || 0}"></td>
+                <td><input type="number" min="0" class="cell-input g-quota" data-cls="IX B" value="${q['IX B'] || 0}"></td>
+                <td class="g-total" style="font-weight:bold; color:var(--primary);">${calcTotal(t)} JP</td>
+                <td><button class="btn btn-danger" style="padding:6px 10px; box-shadow:none;" onclick="this.closest('tr').remove()">🗑️</button></td>
+            `;
+            tr.querySelectorAll('.g-quota').forEach(inp => {
+                inp.addEventListener('input', () => {
+                    let sum = 0;
+                    tr.querySelectorAll('.g-quota').forEach(i2 => sum += (Number(i2.value) || 0));
+                    tr.querySelector('.g-total').innerText = sum + " JP";
+                });
+            });
+            return tr;
+        }
+
+        function addGuruRow() {
+            const tbody = document.getElementById('guru-editor-tbody');
+            const emptyTeacher = { kg: "", nama: "", mapel: "", quota: { "VII": 0, "VIII A": 0, "VIII B": 0, "IX A": 0, "IX B": 0 } };
+            const row = buildGuruRow(emptyTeacher);
+            tbody.appendChild(row);
+            row.querySelector('.g-kode').focus();
+            row.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+
+        function saveGuruEditor() {
+            const rows = document.querySelectorAll('#guru-editor-tbody tr');
+            let newTeachers = [];
+            let usedKodes = new Set();
+            let errorMsg = "";
+
+            rows.forEach(tr => {
+                const kode = tr.querySelector('.g-kode').value.trim().toUpperCase();
+                const nama = tr.querySelector('.g-nama').value.trim();
+                const mapel = tr.querySelector('.g-mapel').value.trim();
+
+                if (!kode && !nama && !mapel) return;
+
+                if (!kode || !nama) {
+                    errorMsg += `• Baris "${nama || kode || '(kosong)'}" belum lengkap (kode/nama wajib diisi).\n`;
+                    return;
+                }
+                if (usedKodes.has(kode)) {
+                    errorMsg += `• Kode Guru "${kode}" dobel, gunakan kode yang unik.\n`;
+                    return;
+                }
+                usedKodes.add(kode);
+
+                let quota = {};
+                tr.querySelectorAll('.g-quota').forEach(inp => {
+                    quota[inp.dataset.cls] = Number(inp.value) || 0;
+                });
+
+                newTeachers.push({ kg: kode, nama, mapel, quota, total: calcTotal({quota}) });
+            });
+
+            if (errorMsg) {
+                alert("⚠️ Data belum bisa disimpan, periksa dulu:\n\n" + errorMsg);
+                return;
+            }
+
+            teachers = newTeachers;
+            saveTeachers();
+            validateAll();
+            alert("✅ Data guru & kuota berhasil disimpan!");
+            renderWorkspace();
+        }
+
+        function resetGuruDefault() {
+            if (confirm("Kembalikan seluruh data guru & kuota ke pengaturan bawaan? Perubahan pada tabel ini yang belum disimpan akan hilang.")) {
+                teachers = JSON.parse(JSON.stringify(defaultTeachers));
+                saveTeachers();
+                validateAll();
+                renderWorkspace();
+            }
+        }
+
+        /* ===================================================================== */
+
+        function handleInputChange(inputElement, jam, day) {
+            let val = inputElement.value.toUpperCase().trim();
+            scheduleStore[currentClass][jam][day] = val;
+            
+            if(!modifiedClasses[currentClass]) {
+                modifiedClasses[currentClass] = true;
+                renderTabs();
+            }
+
+            localStorage.setItem('mts_schedule_data', JSON.stringify(scheduleStore));
+            localStorage.setItem('mts_modified_flags', JSON.stringify(modifiedClasses));
+            
+            validateAll(); 
+        }
+
+        // SISTEM VALIDASI MULTI-FUNGSI: BENTROK JAM & EVALUASI KUOTA KELAS
+        function validateAll() {
+            let conflicts = [];
+            let currentClassOverQuotaTeachers = new Set(); // Menyimpan KG yang overload di kelas aktif
+            
+            // Bersihkan indikator error sebelumnya di halaman aktif
+            const inputs = document.querySelectorAll('.cell-input');
+            inputs.forEach(inp => inp.classList.remove('cell-conflict'));
+
+            // HITUNG REALISASI MENGANJAR GURU TIAP KELAS UNTUK VALIDASI KUOTA MAKSIMAL KELAS
+            let realisasiPerKelas = {}; // Struktur: { "VII": { "A": 3, "B": 2 }, "VIII A": {...} }
+            classes.forEach(c => {
+                realisasiPerKelas[c] = {};
+                timeSlots.forEach(ts => {
+                    if(ts.isBreak) return;
+                    days.forEach(day => {
+                        let teacher = (scheduleStore[c][ts.jam][day] || "").toUpperCase().trim();
+                        if(teacher && teacher !== "ISTIRAHAT" && teacher !== "ISTIRAHAT/MBG" && teacher !== "JAMA'AH" && teacher !== "JAMAAH") {
+                            realisasiPerKelas[c][teacher] = (realisasiPerKelas[c][teacher] || 0) + 1;
+                        }
+                    });
+                });
+            });
+
+            // 1. EVALUASI KUOTA ALOKASI KELAS (Target 0 JP & Batas Maksimal JP Per Kelas)
+            classes.forEach(c => {
+                for (let teacher in realisasiPerKelas[c]) {
+                    let totalTerinput = realisasiPerKelas[c][teacher];
+                    let foundT = teachers.find(t => t.kg === teacher);
+                    if(foundT) {
+                        let kuotaKelas = Number(foundT.quota[c]) || 0;
+                        
+                        // Kasus A: Jika target kuotanya 0 tapi tetap dimasukkan
+                        if(kuotaKelas === 0) {
+                            conflicts.push({
+                                type: "SALAH_ALOKASI", teacher: teacher, nama: foundT.nama, class: c
+                            });
+                            if(currentClass === c) currentClassOverQuotaTeachers.add(teacher);
+                        } 
+                        // Kasus B: Jika kuotanya ada (misal 2 JP) tapi diinput berlebih (misal 3 JP atau lebih)
+                        else if (totalTerinput > kuotaKelas) {
+                            conflicts.push({
+                                type: "LEBIH_KUOTA_KELAS", teacher: teacher, nama: foundT.nama, class: c, terinput: totalTerinput, target: kuotaKelas
+                            });
+                            if(currentClass === c) currentClassOverQuotaTeachers.add(teacher);
+                        }
+                    }
+                }
+            });
+
+            // 2. EVALUASI BENTROK JADWAL (REGULER VS PIKET GURU)
+            // CATATAN PENTING: Satu guru (nama) bisa punya BEBERAPA kode KG berbeda
+            // jika mengampu lebih dari 1 mapel (mis. Nurul Winayanti = J1 & J2).
+            // Deteksi bentrok HARUS dikelompokkan berdasarkan ORANGNYA (nama guru),
+            // bukan berdasarkan kode KG mentah, karena satu orang tetap tidak bisa
+            // mengajar di 2 tempat sekaligus meskipun kode KG-nya berbeda.
+            function getTeacherIdentity(code) {
+                let t = teachers.find(x => x.kg === code);
+                // Jika kode dikenali di data guru, kelompokkan pakai NAMA (agar J1 & J2 nyambung).
+                // Jika kode tidak dikenali (guru custom/luar data), fallback pakai kode itu sendiri.
+                return t ? t.nama : code;
+            }
+
+            piketTimeSlots.forEach(ts => {
+                if(ts.isBreak) return;
+                days.forEach(day => {
+                    let occupation = {}; // key: identitas guru (nama), value: { classes: [], codes: Set() }
+
+                    // Cek di rombel reguler
+                    classes.forEach(c => {
+                        if(scheduleStore[c] && scheduleStore[c][ts.jam]) {
+                            let teacher = (scheduleStore[c][ts.jam][day] || "").toUpperCase().trim();
+                            if (teacher && teacher !== "ISTIRAHAT" && teacher !== "ISTIRAHAT/MBG" && teacher !== "JAMA'AH" && teacher !== "JAMAAH") {
+                                let identity = getTeacherIdentity(teacher);
+                                if (!occupation[identity]) occupation[identity] = { classes: [], codes: new Set() };
+                                occupation[identity].classes.push(`Kelas ${c}`);
+                                occupation[identity].codes.add(teacher);
+                            }
+                        }
+                    });
+
+                    // Cek di tabel piket harian
+                    if(scheduleStore["PIKET"] && scheduleStore["PIKET"][ts.jam]) {
+                        let piketTeacher = (scheduleStore["PIKET"][ts.jam][day] || "").toUpperCase().trim();
+                        if(piketTeacher && piketTeacher !== "ISTIRAHAT" && piketTeacher !== "JAMA'AH") {
+                            let identity = getTeacherIdentity(piketTeacher);
+                            if (!occupation[identity]) occupation[identity] = { classes: [], codes: new Set() };
+                            occupation[identity].classes.push("Piket Guru");
+                            occupation[identity].codes.add(piketTeacher);
+                        }
+                    }
+
+                    // Evaluasi bentrok jam mengajar bersamaan
+                    for (let identity in occupation) {
+                        if (occupation[identity].classes.length > 1) {
+                            let codesArr = Array.from(occupation[identity].codes);
+                            conflicts.push({
+                                type: "BENTROK", teacher: codesArr.join('/'), nama: identity, day: day, jam: ts.jam, waktu: ts.waktu, classes: occupation[identity].classes
+                            });
+
+                            // Tandai merah cell yang bentrok jamnya
+                            if (currentClass !== "DASHBOARD" && currentClass !== "GURU") {
+                                if (currentClass === "PIKET" && occupation[identity].classes.includes("Piket Guru")) {
+                                    const targetInput = document.querySelector(`input[data-jam="${ts.jam}"][data-day="${day}"]`);
+                                    if (targetInput && codesArr.includes(targetInput.value.toUpperCase().trim())) {
+                                        targetInput.classList.add('cell-conflict');
+                                    }
+                                } else if (occupation[identity].classes.includes(`Kelas ${currentClass}`)) {
+                                    const targetInput = document.querySelector(`input[data-jam="${ts.jam}"][data-day="${day}"]`);
+                                    if (targetInput && codesArr.includes(targetInput.value.toUpperCase().trim())) {
+                                        targetInput.classList.add('cell-conflict');
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+
+            // WARNAI CELL DENGAN KODE GURU YANG OVER-KUOTA DI KELAS AKTIF
+            if (currentClass !== "DASHBOARD" && currentClass !== "GURU" && currentClass !== "PIKET") {
+                currentClassOverQuotaTeachers.forEach(teacherCode => {
+                    const matchedInputs = document.querySelectorAll(`.cell-input`);
+                    matchedInputs.forEach(inp => {
+                        if (inp.value.toUpperCase().trim() === teacherCode) {
+                            inp.classList.add('cell-conflict');
+                        }
+                    });
+                });
+            }
+
+            // 3. TAMPILKAN PADA PANEL NOTIFIKASI
+            const panel = document.getElementById('conflict-panel');
+            const listContainer = document.getElementById('conflict-list');
+            
+            if (conflicts.length > 0) {
+                panel.style.display = "flex";
+                listContainer.innerHTML = "";
+                conflicts.forEach(conf => {
+                    const item = document.createElement('div');
+                    item.className = "conflict-item";
+                    // Untuk BENTROK, nama guru sudah tersimpan langsung di conf.nama (identitas guru),
+                    // karena conf.teacher bisa berupa gabungan beberapa kode KG (mis. "J1/J2").
+                    let namaGuru = conf.type === "BENTROK"
+                        ? conf.nama
+                        : ((teachers.find(t => t.kg === conf.teacher)?.nama) || `Guru Kode ${conf.teacher}`);
+                    
+                    if(conf.type === "BENTROK") {
+                        item.innerHTML = `🚨 <b>[JADWAL BENTROK]</b>: <b>${namaGuru} (KG: ${conf.teacher})</b> terdeteksi bentrok mengajar di <b>[${conf.classes.join(' & ')}]</b> pada Hari <b>${conf.day}</b>, Jam ke-${conf.jam} (${conf.waktu}).`;
+                    } else if (conf.type === "SALAH_ALOKASI") {
+                        item.innerHTML = `❌ <b>[SALAH ALOKASI KELAS]</b>: <b>${namaGuru} (KG: ${conf.teacher})</b> diinput di <b>Kelas ${conf.class}</b>, padahal target kuota mengajarnya di kelas tersebut adalah <b>0 JP</b>.`;
+                    } else if (conf.type === "LEBIH_KUOTA_KELAS") {
+                        item.innerHTML = `⚠️ <b>[KUOTA KELAS MELEBIHI TARGET]</b>: Total input jam mengajar <b>${namaGuru} (KG: ${conf.teacher})</b> di <b>Kelas ${conf.class}</b> terhitung <b>${conf.terinput} JP</b>, padahal kuota maksimal kelas tersebut hanya <b>${conf.target} JP</b>.`;
+                    }
+                    
+                    listContainer.appendChild(item);
+                });
+            } else {
+                panel.style.display = "none";
+            }
+        }
+
+        function clearAll() {
+            if(confirm("Apakah Anda yakin ingin mengosongkan seluruh isian tabel jadwal?")) {
+                localStorage.removeItem('mts_schedule_data');
+                localStorage.removeItem('mts_modified_flags');
+                initStore();
+                initApp();
+            }
+        }
+
+        function importExcel(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const data = new Uint8Array(e.target.result);
+                importedWorkbook = XLSX.read(data, { type: 'array', cellStyles: true, cellNF: true });
+                
+                targetSheetName = importedWorkbook.SheetNames.find(n => n.includes('Upacara') || n.includes('Jdwl') || n.includes('2026'));
+                if(!targetSheetName) {
+                    targetSheetName = importedWorkbook.SheetNames[0];
+                }
+
+                const sheet = importedWorkbook.Sheets[targetSheetName];
+                
+                classes.forEach(c => {
+                    let startRow = classRowMapping[c];
+                    timeSlots.forEach(ts => {
+                        if(!ts.isBreak) {
+                            let excelRow = startRow + jamOffsetMapping[ts.jam];
+                            days.forEach(day => {
+                                let excelCol = dayColMapping[day];
+                                let cellRef = XLSX.utils.encode_cell({ r: excelRow - 1, c: excelCol });
+                                if(sheet[cellRef] && sheet[cellRef].v !== undefined) {
+                                    let rawVal = String(sheet[cellRef].v).toUpperCase().trim();
+                                    if(rawVal !== "ISTIRAHAT" && rawVal !== "ISTIRAHAT/MBG" && rawVal !== "JAMA'AH" && rawVal !== "JAMAAH") {
+                                        scheduleStore[c][ts.jam][day] = rawVal;
+                                    }
+                                }
+                            });
+                        }
+                    });
+                });
+
+                let piketStartRow = classRowMapping["PIKET"];
+                piketTimeSlots.forEach(ts => {
+                    if(!ts.isBreak) {
+                        let excelRow = piketStartRow + piketOffsetMapping[ts.jam];
+                        days.forEach(day => {
+                            let excelCol = dayColMapping[day];
+                            let cellRef = XLSX.utils.encode_cell({ r: excelRow - 1, c: excelCol });
+                            if(sheet[cellRef] && sheet[cellRef].v !== undefined) {
+                                let rawVal = String(sheet[cellRef].v).toUpperCase().trim();
+                                if(rawVal !== "ISTIRAHAT" && rawVal !== "ISTIRAHAT/MBG" && rawVal !== "JAMA'AH" && rawVal !== "JAMAAH") {
+                                    scheduleStore["PIKET"][ts.jam][day] = rawVal;
+                                }
+                            }
+                        });
+                    }
+                });
+
+                localStorage.setItem('mts_schedule_data', JSON.stringify(scheduleStore));
+                sessionStorage.setItem('excel_loaded', 'true');
+                
+                enableExportButton();
+                initApp();
+                validateAll(); 
+
+                alert("🎉 Berkas Berhasil Terkunci! Data Excel sinkron dengan tata letak analitik dashboard.");
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function exportSmartExcel() {
+            if (!importedWorkbook || !targetSheetName) {
+                alert("Harap upload file berkas Excel dasar Anda terlebih dahulu pada langkah (1)!");
+                return;
+            }
+
+            const sheet = importedWorkbook.Sheets[targetSheetName];
+            let updateCount = 0;
+
+            classes.forEach(c => {
+                if (modifiedClasses[c] === true) {
+                    let startRow = classRowMapping[c]; 
+                    timeSlots.forEach(ts => {
+                        if(!ts.isBreak) {
+                            let excelRow = startRow + jamOffsetMapping[ts.jam];
+                            days.forEach(day => {
+                                let excelCol = dayColMapping[day];
+                                let cellRef = XLSX.utils.encode_cell({ r: excelRow - 1, c: excelCol });
+                                let currentVal = scheduleStore[c][ts.jam][day] || "";
+                                
+                                if(!sheet[cellRef]) {
+                                    sheet[cellRef] = { t: 's', v: currentVal };
+                                } else {
+                                    sheet[cellRef].v = currentVal;
+                                    sheet[cellRef].t = 's';
+                                }
+                            });
+                        }
+                    });
+                    updateCount++;
+                }
+            });
+
+            if (modifiedClasses["PIKET"] === true) {
+                let piketStartRow = classRowMapping["PIKET"];
+                piketTimeSlots.forEach(ts => {
+                    if(!ts.isBreak) {
+                        let excelRow = piketStartRow + piketOffsetMapping[ts.jam];
+                        days.forEach(day => {
+                            let excelCol = dayColMapping[day];
+                            let cellRef = XLSX.utils.encode_cell({ r: excelRow - 1, c: excelCol });
+                            let currentVal = scheduleStore["PIKET"][ts.jam][day] || "";
+                            
+                            if(!sheet[cellRef]) {
+                                sheet[cellRef] = { t: 's', v: currentVal };
+                            } else {
+                                sheet[cellRef].v = currentVal;
+                                sheet[cellRef].t = 's';
+                            }
+                        });
+                    }
+                });
+                updateCount++;
+            }
+
+            if(updateCount === 0) {
+                if(!confirm("Anda belum mengedit komponen kelas atau piket mana pun. Berkas unduhan akan identik bawaan. Lanjutkan?")) {
+                    return;
+                }
+            }
+
+            const wbout = XLSX.write(importedWorkbook, { bookType: 'xlsx', type: 'array' });
+            const blob = new Blob([wbout], { type: "application/octet-stream" });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `Form Jadwal Pelajaran 2026-2027_Updated.xlsx`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        window.onload = initApp;
+    </script>
+</body>
+</html>
