@@ -717,7 +717,7 @@
 
             const piketBtn = document.createElement('button');
             piketBtn.className = `class-tab btn-piket-tab ${currentClass === 'PIKET' ? 'active' : ''}`;
-            piketBtn.innerHTML = `📌 Tabel Piket Guru ${modifiedClasses['PIKET'] ? '✍️' : ''}`;
+            piketBtn.innerHTML = `📌 Piket Guru ${modifiedClasses['PIKET'] ? '✍️' : ''}`;
             piketBtn.onclick = () => {
                 currentClass = "PIKET";
                 renderTabs();
