@@ -376,31 +376,24 @@
             box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
         }
 
-        .piket-dual-cell {
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-        }
-
-        .piket-dual-cell .cell-input {
-            padding: 5px 4px;
+        .cell-upacara {
+            background-color: #eef2ff !important;
+            color: var(--primary-dark);
+            font-weight: 700;
             font-size: 12.5px;
+            vertical-align: middle;
+            letter-spacing: 0.02em;
         }
 
-        .piket-slot-input[data-slot="1"] {
-            background: #fff7e6;
+        .cell-locked {
+            background-color: #f3f4f6 !important;
+            color: #9ca3af;
+            vertical-align: middle;
         }
-        .piket-slot-input[data-slot="1"]:hover { background: #fdecc8; }
-        .piket-slot-input[data-slot="1"]:focus { background: #fff; }
 
-        .piket-slot-input[data-slot="2"] {
-            background: #eef3ff;
-        }
-        .piket-slot-input[data-slot="2"]:hover { background: #dde6ff; }
-        .piket-slot-input[data-slot="2"]:focus { background: #fff; }
-
-        .piket-slot-divider {
-            border-top: 1px dashed var(--border);
+        .locked-dash {
+            font-size: 16px;
+            font-weight: 700;
         }
 
         .cell-break {
@@ -618,6 +611,12 @@
 
         const days = ["Sabtu", "Ahad", "Senin", "Selasa", "Rabu", "Kamis"];
 
+        // ATURAN TETAP JADWAL PELAJARAN:
+        // 1) Setiap hari Senin jam ke-1, semua kelas otomatis "UP" (Upacara Bendera), tidak bisa diedit manual.
+        const UPACARA_CODE = "UP";
+        // 2) Khusus hari Sabtu, Rabu, dan Kamis, KBM (jam mapel) hanya sampai jam ke-8 (tidak ada jam ke-9).
+        const NO_NINTH_HOUR_DAYS = ["Sabtu", "Rabu", "Kamis"];
+
         let defaultTeachers = [
             {"kg": "A", "nama": "M. Syakroni, S.Pd.I", "mapel": "Fiqih", "quota": {"VII": 0, "VIII A": 0, "VIII B": 0, "IX A": 2, "IX B": 2}, "total": 4},
             {"kg": "B", "nama": "H. Ahmad Romlan", "mapel": "Hadits", "quota": {"VII": 2, "VIII A": 2, "VIII B": 2, "IX A": 2, "IX B": 2}, "total": 10},
@@ -685,6 +684,23 @@
                 });
             });
             Object.keys(modifiedClasses).forEach(k => modifiedClasses[k] = false);
+            normalizeFixedSlots();
+        }
+
+        // Memaksa nilai sel-sel yang sudah ditetapkan aturan tetap (Upacara Senin jam-1,
+        // dan tidak ada jam ke-9 di hari Sabtu/Rabu/Kamis) agar selalu konsisten,
+        // baik saat data baru diinisialisasi, dimuat dari localStorage, maupun diimpor dari Excel.
+        function normalizeFixedSlots() {
+            classes.forEach(c => {
+                if (scheduleStore[c] && scheduleStore[c][1]) {
+                    scheduleStore[c][1]["Senin"] = UPACARA_CODE;
+                }
+                if (scheduleStore[c] && scheduleStore[c][9]) {
+                    NO_NINTH_HOUR_DAYS.forEach(d => {
+                        scheduleStore[c][9][d] = "";
+                    });
+                }
+            });
         }
 
         if (localStorage.getItem('mts_schedule_data')) {
@@ -692,6 +708,7 @@
             if(localStorage.getItem('mts_modified_flags')) {
                 modifiedClasses = JSON.parse(localStorage.getItem('mts_modified_flags'));
             }
+            normalizeFixedSlots();
         } else {
             initStore();
         }
@@ -929,7 +946,7 @@
                     </thead>
                     <tbody id="schedule-tbody"></tbody>
                 </table>
-                <div class="hint-text">*Isikan cell dengan KODE GURU (KG). Contoh: A, B, D1, F, dll. Kosongkan jika kosong.</div>
+                <div class="hint-text">*Isikan cell dengan KODE GURU (KG). Contoh: A, B, D1, F, dll. Kosongkan jika kosong. Sel <b>UP</b> (Upacara, Senin jam-1) dan sel bertanda "–" (tidak ada jam ke-9 di hari Sabtu/Rabu/Kamis) terkunci otomatis.</div>
             `;
             container.innerHTML = tableHTML;
 
@@ -955,18 +972,32 @@
                 } else {
                     days.forEach(day => {
                         const td = document.createElement('td');
-                        const val = scheduleStore[currentClass][ts.jam][day] || "";
-                        
-                        const input = document.createElement('input');
-                        input.type = "text";
-                        input.className = "cell-input";
-                        input.value = val;
-                        input.dataset.jam = ts.jam;
-                        input.dataset.day = day;
 
-                        input.oninput = (e) => handleInputChange(e.target, ts.jam, day);
+                        if (ts.jam === 1 && day === "Senin") {
+                            // UPACARA BENDERA: terkunci otomatis, tidak bisa diedit
+                            td.className = "cell-upacara";
+                            td.innerHTML = `🚩 <b>${UPACARA_CODE}</b>`;
+                            td.title = "Upacara Bendera setiap Senin jam ke-1 (otomatis terkunci)";
+                        } else if (ts.jam === 9 && NO_NINTH_HOUR_DAYS.includes(day)) {
+                            // TIDAK ADA JAM KE-9: khusus Sabtu, Rabu, Kamis (KBM hanya 8 jam)
+                            td.className = "cell-locked";
+                            td.innerHTML = `<span class="locked-dash">–</span>`;
+                            td.title = "Tidak ada jam pelajaran ke-9 pada hari ini (KBM hanya 8 jam)";
+                        } else {
+                            const val = scheduleStore[currentClass][ts.jam][day] || "";
 
-                        td.appendChild(input);
+                            const input = document.createElement('input');
+                            input.type = "text";
+                            input.className = "cell-input";
+                            input.value = val;
+                            input.dataset.jam = ts.jam;
+                            input.dataset.day = day;
+
+                            input.oninput = (e) => handleInputChange(e.target, ts.jam, day);
+
+                            td.appendChild(input);
+                        }
+
                         tr.appendChild(td);
                     });
                 }
@@ -993,7 +1024,7 @@
                     </thead>
                     <tbody id="schedule-tbody"></tbody>
                 </table>
-                <div class="hint-text">*Setiap jam piket dapat diisi <b>maksimal 2 guru</b> (kotak atas = Guru 1, kotak bawah = Guru 2) untuk jam yang sama. Isikan kode guru (KG) bertugas harian, kosongkan jika tidak ada. Sistem otomatis mengunci dan mendeteksi bentrok jika guru tersebut sedang mengajar di kelas lain.</div>
+                <div class="hint-text">*Bisa diisi <b>lebih dari satu guru dalam jam yang sama</b>, pisahkan dengan tanda koma. Contoh: <b>A,K</b>. Kosongkan jika tidak ada piket. Sistem otomatis mendeteksi bentrok jika salah satu guru tersebut sedang mengajar di kelas lain.</div>
             `;
             container.innerHTML = tableHTML;
 
@@ -1019,41 +1050,19 @@
                 } else {
                     days.forEach(day => {
                         const td = document.createElement('td');
+                        const val = scheduleStore["PIKET"][ts.jam][day] || "";
 
-                        // Nilai piket disimpan sebagai satu string, dipisah "/" jika diisi 2 guru sekaligus
-                        const rawVal = scheduleStore["PIKET"][ts.jam][day] || "";
-                        const parts = rawVal.split("/");
-                        const val1 = (parts[0] || "").trim();
-                        const val2 = (parts[1] || "").trim();
+                        const input = document.createElement('input');
+                        input.type = "text";
+                        input.className = "cell-input";
+                        input.placeholder = "cth: A,K";
+                        input.value = val;
+                        input.dataset.jam = ts.jam;
+                        input.dataset.day = day;
 
-                        const wrapper = document.createElement('div');
-                        wrapper.className = "piket-dual-cell";
+                        input.oninput = (e) => handleInputChange(e.target, ts.jam, day);
 
-                        const input1 = document.createElement('input');
-                        input1.type = "text";
-                        input1.className = "cell-input piket-slot-input";
-                        input1.title = "Guru 1";
-                        input1.placeholder = "Guru 1";
-                        input1.value = val1;
-                        input1.dataset.jam = ts.jam;
-                        input1.dataset.day = day;
-                        input1.dataset.slot = "1";
-                        input1.oninput = () => handlePiketInputChange(ts.jam, day);
-
-                        const input2 = document.createElement('input');
-                        input2.type = "text";
-                        input2.className = "cell-input piket-slot-input";
-                        input2.title = "Guru 2";
-                        input2.placeholder = "Guru 2";
-                        input2.value = val2;
-                        input2.dataset.jam = ts.jam;
-                        input2.dataset.day = day;
-                        input2.dataset.slot = "2";
-                        input2.oninput = () => handlePiketInputChange(ts.jam, day);
-
-                        wrapper.appendChild(input1);
-                        wrapper.appendChild(input2);
-                        td.appendChild(wrapper);
+                        td.appendChild(input);
                         tr.appendChild(td);
                     });
                 }
@@ -1202,30 +1211,6 @@
             validateAll(); 
         }
 
-        // KHUSUS TABEL PIKET: satu jam bisa diisi hingga 2 guru sekaligus.
-        // Kedua nilai digabung jadi satu string dipisah "/" agar tetap kompatibel
-        // dengan struktur penyimpanan (scheduleStore) & ekspor-impor Excel (1 sel).
-        function handlePiketInputChange(jam, day) {
-            const input1 = document.querySelector(`.piket-slot-input[data-jam="${jam}"][data-day="${day}"][data-slot="1"]`);
-            const input2 = document.querySelector(`.piket-slot-input[data-jam="${jam}"][data-day="${day}"][data-slot="2"]`);
-
-            const v1 = (input1 ? input1.value : "").toUpperCase().trim();
-            const v2 = (input2 ? input2.value : "").toUpperCase().trim();
-
-            const combined = [v1, v2].filter(v => v !== "").join("/");
-            scheduleStore["PIKET"][jam][day] = combined;
-
-            if(!modifiedClasses["PIKET"]) {
-                modifiedClasses["PIKET"] = true;
-                renderTabs();
-            }
-
-            localStorage.setItem('mts_schedule_data', JSON.stringify(scheduleStore));
-            localStorage.setItem('mts_modified_flags', JSON.stringify(modifiedClasses));
-
-            validateAll();
-        }
-
         // SISTEM VALIDASI MULTI-FUNGSI: BENTROK JAM & EVALUASI KUOTA KELAS
         function validateAll() {
             let conflicts = [];
@@ -1242,8 +1227,10 @@
                 timeSlots.forEach(ts => {
                     if(ts.isBreak) return;
                     days.forEach(day => {
+                        // Lewati sel yang terkunci aturan tetap: Upacara (Senin jam-1) & tidak ada jam ke-9 (Sabtu/Rabu/Kamis)
+                        if ((ts.jam === 1 && day === "Senin") || (ts.jam === 9 && NO_NINTH_HOUR_DAYS.includes(day))) return;
                         let teacher = (scheduleStore[c][ts.jam][day] || "").toUpperCase().trim();
-                        if(teacher && teacher !== "ISTIRAHAT" && teacher !== "ISTIRAHAT/MBG" && teacher !== "JAMA'AH" && teacher !== "JAMAAH") {
+                        if(teacher && teacher !== "ISTIRAHAT" && teacher !== "ISTIRAHAT/MBG" && teacher !== "JAMA'AH" && teacher !== "JAMAAH" && teacher !== UPACARA_CODE) {
                             realisasiPerKelas[c][teacher] = (realisasiPerKelas[c][teacher] || 0) + 1;
                         }
                     });
@@ -1294,25 +1281,30 @@
                 days.forEach(day => {
                     let occupation = {}; // key: identitas guru (nama), value: { classes: [], codes: Set() }
 
-                    // Cek di rombel reguler
-                    classes.forEach(c => {
-                        if(scheduleStore[c] && scheduleStore[c][ts.jam]) {
-                            let teacher = (scheduleStore[c][ts.jam][day] || "").toUpperCase().trim();
-                            if (teacher && teacher !== "ISTIRAHAT" && teacher !== "ISTIRAHAT/MBG" && teacher !== "JAMA'AH" && teacher !== "JAMAAH") {
-                                let identity = getTeacherIdentity(teacher);
-                                if (!occupation[identity]) occupation[identity] = { classes: [], codes: new Set() };
-                                occupation[identity].classes.push(`Kelas ${c}`);
-                                occupation[identity].codes.add(teacher);
-                            }
-                        }
-                    });
+                    // Lewati sel terkunci aturan tetap: Upacara (Senin jam-1) & tidak ada jam ke-9 (Sabtu/Rabu/Kamis)
+                    let isLockedRegularSlot = (ts.jam === 1 && day === "Senin") || (ts.jam === 9 && NO_NINTH_HOUR_DAYS.includes(day));
 
-                    // Cek di tabel piket harian (satu jam bisa diisi hingga 2 guru sekaligus,
-                    // nilainya tersimpan sebagai "KODE1/KODE2" sehingga perlu dipisah dulu)
+                    // Cek di rombel reguler
+                    if (!isLockedRegularSlot) {
+                        classes.forEach(c => {
+                            if(scheduleStore[c] && scheduleStore[c][ts.jam]) {
+                                let teacher = (scheduleStore[c][ts.jam][day] || "").toUpperCase().trim();
+                                if (teacher && teacher !== "ISTIRAHAT" && teacher !== "ISTIRAHAT/MBG" && teacher !== "JAMA'AH" && teacher !== "JAMAAH" && teacher !== UPACARA_CODE) {
+                                    let identity = getTeacherIdentity(teacher);
+                                    if (!occupation[identity]) occupation[identity] = { classes: [], codes: new Set() };
+                                    occupation[identity].classes.push(`Kelas ${c}`);
+                                    occupation[identity].codes.add(teacher);
+                                }
+                            }
+                        });
+                    }
+
+                    // Cek di tabel piket harian (satu jam bisa diisi lebih dari 1 guru sekaligus,
+                    // nilainya tersimpan sebagai "KODE1,KODE2" sehingga perlu dipisah dulu)
                     if(scheduleStore["PIKET"] && scheduleStore["PIKET"][ts.jam]) {
                         let piketRaw = (scheduleStore["PIKET"][ts.jam][day] || "").toUpperCase().trim();
                         if (piketRaw) {
-                            let piketCodes = piketRaw.split("/")
+                            let piketCodes = piketRaw.split(/[,/]/)
                                 .map(x => x.trim())
                                 .filter(x => x !== "" && x !== "ISTIRAHAT" && x !== "JAMA'AH" && x !== "JAMAAH");
 
@@ -1338,12 +1330,13 @@
                             // Tandai merah cell yang bentrok jamnya
                             if (currentClass !== "DASHBOARD" && currentClass !== "GURU") {
                                 if (currentClass === "PIKET" && occupation[identity].classes.includes("Piket Guru")) {
-                                    const targetInputs = document.querySelectorAll(`.piket-slot-input[data-jam="${ts.jam}"][data-day="${day}"]`);
-                                    targetInputs.forEach(targetInput => {
-                                        if (codesArr.includes(targetInput.value.toUpperCase().trim())) {
+                                    const targetInput = document.querySelector(`input[data-jam="${ts.jam}"][data-day="${day}"]`);
+                                    if (targetInput) {
+                                        const inputCodes = targetInput.value.toUpperCase().split(/[,/]/).map(x => x.trim()).filter(x => x !== "");
+                                        if (inputCodes.some(code => codesArr.includes(code))) {
                                             targetInput.classList.add('cell-conflict');
                                         }
-                                    });
+                                    }
                                 } else if (occupation[identity].classes.includes(`Kelas ${currentClass}`)) {
                                     const targetInput = document.querySelector(`input[data-jam="${ts.jam}"][data-day="${day}"]`);
                                     if (targetInput && codesArr.includes(targetInput.value.toUpperCase().trim())) {
@@ -1463,6 +1456,9 @@
                 localStorage.setItem('mts_schedule_data', JSON.stringify(scheduleStore));
                 sessionStorage.setItem('excel_loaded', 'true');
                 
+                normalizeFixedSlots();
+                localStorage.setItem('mts_schedule_data', JSON.stringify(scheduleStore));
+
                 enableExportButton();
                 initApp();
                 validateAll(); 
