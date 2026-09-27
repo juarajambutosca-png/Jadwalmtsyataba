@@ -2,1547 +2,604 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplikasi Jadwal Pelajaran Anti-Bentrok MTs Tarbiyatul Banin Banat</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pengumuman Nilai ASTS Ganjil</title>
     <style>
-        :root {
-            --primary: #4338ca;
-            --primary-dark: #312e81;
-            --primary-light: #6366f1;
-            --accent: #0d9488;
-            --danger: #e11d48;
-            --danger-bg: #fef1f2;
-            --warning: #d97706;
-            --warning-bg: #fffbeb;
-            --success: #16a34a;
-            --info: #2563eb;
-            --piket: #d97706;
-            --piket-bg: #fff7e6;
-
-            --surface: #ffffff;
-            --canvas: #f3f4f9;
-            --border: #e5e7eb;
-            --border-soft: #eef0f6;
-
-            --text-dark: #1e1b3a;
-            --text-body: #3f3d56;
-            --text-mute: #8b899e;
-
-            --radius-lg: 16px;
-            --radius-md: 10px;
-            --radius-sm: 7px;
-            --shadow-sm: 0 1px 2px rgba(30, 27, 58, 0.06);
-            --shadow-md: 0 6px 20px -4px rgba(49, 46, 129, 0.12);
-            --shadow-lg: 0 16px 40px -8px rgba(49, 46, 129, 0.18);
-        }
-
         * {
             box-sizing: border-box;
-            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
             padding: 0;
         }
 
-        ::-webkit-scrollbar { width: 10px; height: 10px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #c7c9de; border-radius: 10px; border: 2px solid transparent; background-clip: content-box; }
-        ::-webkit-scrollbar-thumb:hover { background: #a8abce; background-clip: content-box; }
+        html, body {
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            background-color: #f0f4f8;
+        }
 
         body {
-            background:
-                radial-gradient(1100px 500px at 100% -10%, #eef0ff 0%, rgba(238,240,255,0) 60%),
-                var(--canvas);
-            color: var(--text-body);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 12px;
+        }
+
+        .card {
+            background: #ffffff;
+            padding: 24px 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 480px;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
+            justify-content: center;
+            transition: max-width 0.3s ease;
         }
 
-        header {
-            background: linear-gradient(120deg, var(--primary-dark) 0%, var(--primary) 55%, var(--primary-light) 100%);
-            color: white;
-            padding: 16px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 16px;
-            box-shadow: 0 2px 10px rgba(49, 46, 129, 0.18);
-            flex-wrap: wrap;
+        .card.admin-mode {
+            max-width: 900px;
         }
 
-        header h1 {
-            font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
-            font-size: 17px;
-            font-weight: 700;
-            letter-spacing: -0.01em;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .header {
+            text-align: center;
+            margin-bottom: 12px;
         }
 
-        header h1 .subtitle {
-            display: block;
-            font-family: 'Inter', sans-serif;
-            font-size: 11px;
-            font-weight: 500;
-            opacity: 0.75;
+        .header h2 {
+            color: #1e293b;
+            font-size: 20px;
+            font-weight: 800;
+            text-transform: uppercase;
+            line-height: 1.2;
+            letter-spacing: 0.5px;
+        }
+
+        .header .sub-header {
+            color: #2563eb;
+            font-size: 16px;
+            font-weight: 800;
+            text-transform: uppercase;
             margin-top: 2px;
+            letter-spacing: 0.5px;
         }
 
-        .header-actions {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 9px 16px;
-            border: none;
-            border-radius: var(--radius-sm);
-            cursor: pointer;
+        .header .sub-title {
+            color: #64748b;
+            font-size: 13px;
             font-weight: 600;
-            font-size: 12.5px;
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, opacity 0.15s ease;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.08);
-            white-space: nowrap;
+            margin-top: 4px;
+            margin-bottom: 10px;
         }
 
-        .btn:not(:disabled):hover {
-            transform: translateY(-1px);
-        }
-        .btn:not(:disabled):active {
-            transform: translateY(0);
-        }
-
-        .btn-primary { background: rgba(255,255,255,0.14); color: white; border: 1px solid rgba(255,255,255,0.35); backdrop-filter: blur(4px); }
-        .btn-primary:hover { background: rgba(255,255,255,0.24); }
-
-        .btn-success { background: linear-gradient(135deg, #22c55e, #16a34a); color: white; }
-        .btn-success:not(:disabled):hover { box-shadow: 0 6px 16px rgba(22, 163, 74, 0.4); }
-        .btn-success:disabled { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.55); box-shadow: none; }
-
-        .btn-danger { background: rgba(0,0,0,0.18); color: white; border: 1px solid rgba(255,255,255,0.2); }
-        .btn-danger:hover { background: rgba(0,0,0,0.3); }
-
-        .main-container {
-            display: flex;
-            flex: 1;
-        }
-
-        .content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            padding: 18px 22px 22px;
-            gap: 14px;
-        }
-
-        .navbar-classes {
-            display: flex;
-            gap: 8px;
-            background: var(--surface);
-            padding: 8px;
-            border-radius: var(--radius-md);
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border-soft);
-            flex-wrap: wrap;
-        }
-
-        .class-tab {
-            padding: 9px 16px;
-            background: #f3f4f9;
-            color: var(--text-body);
-            border: 1px solid transparent;
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 13px;
-            transition: all 0.15s ease;
-        }
-
-        .class-tab:hover {
-            background: #e8e9f5;
-            transform: translateY(-1px);
-        }
-
-        .class-tab.active {
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            color: white;
-            box-shadow: 0 4px 12px rgba(67, 56, 202, 0.35);
-        }
-
-        .class-tab.btn-dashboard {
-            background: #eef0ff;
-            color: var(--primary-dark);
-            border: 1px solid #dcdffb;
-        }
-        .class-tab.btn-dashboard:hover { background: #e2e5ff; }
-        .class-tab.btn-dashboard.active {
-            background: linear-gradient(135deg, var(--info), #3b82f6);
-            color: white;
-            border-color: transparent;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
-        }
-
-        .class-tab.btn-piket-tab {
-            background: var(--piket-bg);
-            color: #b45309;
-            border: 1px solid #fbdca0;
-        }
-        .class-tab.btn-piket-tab:hover { background: #ffefc7; }
-        .class-tab.btn-piket-tab.active {
-            background: linear-gradient(135deg, #f59e0b, var(--piket));
-            color: white;
-            border-color: transparent;
-            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.35);
-        }
-
-        .class-tab.btn-guru-tab {
-            background: #e6f7f5;
-            color: #0f766e;
-            border: 1px solid #b9ece5;
-        }
-        .class-tab.btn-guru-tab:hover { background: #d7f3ef; }
-        .class-tab.btn-guru-tab.active {
-            background: linear-gradient(135deg, #14b8a6, var(--accent));
-            color: white;
-            border-color: transparent;
-            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.35);
-        }
-
-        /* Alert Panel for Conflicts */
-        .conflict-panel {
-            background: var(--danger-bg);
-            border: 1px solid #fecdd3;
-            border-left: 4px solid var(--danger);
-            padding: 12px 14px;
-            border-radius: var(--radius-md);
-            display: none;
-            flex-direction: column;
-            gap: 6px;
-            max-height: 200px;
-            overflow-y: auto;
-            animation: slideDown 0.2s ease;
-        }
-
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-6px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .conflict-panel h4 {
-            color: var(--danger);
-            font-size: 13px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .conflict-item {
-            font-size: 12.5px;
-            color: #9f1239;
-            line-height: 1.5;
-            padding: 4px 0;
-            border-bottom: 1px dashed rgba(225, 29, 72, 0.1);
-        }
-        .conflict-item b { color: #881337; }
-
-        /* Template Indicator Notice */
-        .template-badge {
-            background-color: #eaf2ff;
-            color: #1d4ed8;
-            padding: 11px 16px;
-            border-radius: var(--radius-md);
-            font-size: 13px;
-            font-weight: 500;
-            border: 1px solid #d3e2fd;
-            border-left: 4px solid var(--info);
-            transition: all 0.2s ease;
-        }
-
-        /* Schedule Table Grid Layout */
-        .table-container {
-            background: var(--surface);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-md);
-            border: 1px solid var(--border-soft);
-            overflow-x: auto;
-            padding: 18px;
-            animation: fadeIn 0.2s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(4px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .table-container h2 {
-            font-family: 'Plus Jakarta Sans', sans-serif;
+        .header .mapel {
+            display: inline-block;
+            background-color: #eff6ff;
+            color: #2563eb;
             font-size: 17px;
+            font-weight: 800;
+            padding: 8px 22px;
+            border-radius: 20px;
+            border: 1px solid #bfdbfe;
+            letter-spacing: 0.5px;
+            margin-bottom: 0;
+        }
+
+        .content-area {
+            width: 100%;
+        }
+
+        .form-group {
+            margin-top: 12px;
+            margin-bottom: 14px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 4px;
             font-weight: 700;
-            color: var(--text-dark);
-            letter-spacing: -0.01em;
+            color: #334155;
+            font-size: 15px;
+        }
+
+        .direct-guide {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+
+        .direct-guide strong {
+            color: #2563eb;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #cbd5e1;
+            border-radius: 12px;
+            font-size: 16px;
+            text-align: center;
+            letter-spacing: 1px;
+            font-weight: 700;
+            color: #0f172a;
+            transition: all 0.2s;
+        }
+
+        input[type="text"]:focus {
+            border-color: #2563eb;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+            touch-action: manipulation;
+        }
+
+        button:hover {
+            background-color: #1d4ed8;
+        }
+
+        .btn-secondary {
+            background-color: #64748b;
+            margin-top: 12px;
+        }
+
+        .btn-secondary:hover {
+            background-color: #475569;
+        }
+
+        .error-msg {
+            color: #dc2626;
+            text-align: center;
+            margin-top: 10px;
+            font-size: 13px;
+            display: none;
+            font-weight: 600;
+        }
+
+        .result-card, .admin-card {
+            display: none;
+        }
+
+        .student-profile {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 12px 14px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        .info-row {
+            display: grid;
+            grid-template-columns: 85px 12px 1fr;
+            align-items: center;
+            margin: 4px 0;
+            font-size: 14px;
+            color: #334155;
+        }
+
+        .info-label {
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .info-colon {
+            text-align: center;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .info-value {
+            color: #1e293b;
+            font-weight: 700;
+            word-break: break-all;
+        }
+
+        .rank-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 8px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .rank-box .rank-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .rank-box .rank-value {
+            font-size: 18px;
+            font-weight: 800;
+            color: #334155;
+        }
+
+        .score-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            text-align: center;
+        }
+
+        .score-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 12px 8px;
+            border-radius: 12px;
+        }
+
+        .score-box.total-jadi {
+            background: #eff6ff;
+            border-color: #bfdbfe;
+            grid-column: span 2;
+        }
+
+        .score-box .label {
+            font-size: 11px;
+            color: #64748b;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .score-box .val {
+            font-size: 22px;
+            font-weight: 800;
+            color: #1e293b;
+        }
+
+        .score-box.total-jadi .val {
+            color: #2563eb;
+            font-size: 28px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            max-height: 50vh;
+            margin-top: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
         }
 
         table {
             width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            text-align: center;
+            border-collapse: collapse;
             font-size: 13px;
+            text-align: left;
         }
 
         th, td {
-            border-bottom: 1px solid var(--border);
-            border-right: 1px solid var(--border);
-            padding: 9px 8px;
-            min-width: 100px;
-            color: var(--text-body);
-        }
-
-        tbody tr:hover td {
-            background-color: #f7f8ff;
-        }
-        tbody tr:hover td:first-child,
-        tbody tr:hover td.time-col {
-            background-color: #eef0ff;
+            padding: 10px 12px;
+            border-bottom: 1px solid #e2e8f0;
         }
 
         th {
-            background: linear-gradient(180deg, var(--primary-dark), var(--primary));
-            color: #ffffff;
+            background-color: #f1f5f9;
+            color: #334155;
             font-weight: 700;
-            font-size: 12px;
-            letter-spacing: 0.02em;
-            text-transform: uppercase;
-            border-right: 1px solid rgba(255,255,255,0.12);
-            border-bottom: none;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
 
-        td:first-child {
-            background: #eef0f6;
-            color: var(--text-dark);
-            font-weight: 700;
-            min-width: 60px;
-        }
-
-        th:first-child {
-            background: linear-gradient(180deg, var(--primary-dark), var(--primary));
-            color: #ffffff;
-        }
-
-        .time-col {
-            min-width: 90px;
-            font-size: 11.5px;
-            font-weight: 600;
-            background: #f6f7fb;
-            color: var(--text-mute);
-        }
-
-        .cell-input {
-            width: 100%;
-            border: 1.5px solid transparent;
-            padding: 7px 4px;
-            text-align: center;
-            font-weight: 700;
-            text-transform: uppercase;
-            border-radius: var(--radius-sm);
-            font-size: 14px;
-            font-family: 'Inter', sans-serif;
-            transition: all 0.15s ease;
-            background: transparent;
-            color: var(--text-dark);
-        }
-
-        .cell-input::placeholder { color: var(--text-mute); font-weight: 500; }
-
-        .cell-input:hover {
-            background: #f6f7fb;
-        }
-
-        .cell-input:focus {
-            border-color: var(--accent);
-            background: #fff;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
-        }
-
-        .cell-upacara {
-            background-color: #eef2ff !important;
-            color: var(--primary-dark);
-            font-weight: 700;
-            font-size: 12.5px;
-            vertical-align: middle;
-            letter-spacing: 0.02em;
-        }
-
-        .cell-locked {
-            background-color: #f3f4f6 !important;
-            color: #9ca3af;
-            vertical-align: middle;
-        }
-
-        .locked-dash {
-            font-size: 16px;
-            font-weight: 700;
-        }
-
-        .cell-break {
-            background-color: var(--piket-bg) !important;
-            color: #b45309;
-            font-weight: 600;
-            font-size: 11.5px;
-            vertical-align: middle;
-            letter-spacing: 0.02em;
-        }
-
-        .cell-conflict {
-            background-color: var(--danger-bg) !important;
-            border: 1.5px solid var(--danger) !important;
-            color: var(--danger) !important;
-            animation: pulseConflict 1.4s ease-in-out infinite;
-        }
-
-        @keyframes pulseConflict {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.25); }
-            50% { box-shadow: 0 0 0 4px rgba(225, 29, 72, 0.08); }
-        }
-
-        .hint-text {
-            font-size: 11.5px;
-            color: var(--text-mute);
-            margin-top: 8px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        /* Dashboard Styles */
-        .dashboard-container {
-            display: flex;
-            flex-direction: column;
-            gap: 22px;
-        }
-
-        .dashboard-container h3 {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-weight: 700;
-            color: var(--text-dark);
-            font-size: 15px;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 16px;
-        }
-
-        .stat-card {
-            background: linear-gradient(160deg, #ffffff, #f8f9ff);
-            border: 1px solid var(--border-soft);
-            border-radius: var(--radius-md);
-            padding: 18px;
-            text-align: center;
-            box-shadow: var(--shadow-sm);
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
-        }
-        .stat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .stat-card > div:first-child {
-            font-size: 12.5px;
-            font-weight: 600;
-            color: var(--text-mute);
-        }
-
-        .stat-val {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 26px;
-            font-weight: 800;
-            color: var(--primary);
-            margin-top: 6px;
-            letter-spacing: -0.02em;
-        }
-
-        .teacher-progress {
-            margin-top: 10px;
-            background: #e7e8f5;
-            height: 7px;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, #22c55e, #16a34a);
-            width: 0%;
-            border-radius: 4px;
-            transition: width 0.4s ease;
-        }
-
-        .badge-dash {
-            padding: 3px 9px;
-            border-radius: 20px;
-            font-size: 11px;
-            color: white;
-            font-weight: 700;
-            display: inline-block;
-            letter-spacing: 0.01em;
-        }
-        .bg-done { background: linear-gradient(135deg, #22c55e, var(--success)); }
-        .bg-over { background: linear-gradient(135deg, #fb7185, var(--danger)); }
-        .bg-warning { background: linear-gradient(135deg, #fbbf24, var(--warning)); }
-
-        .cell-zero {
-            color: #c7c9de;
-            font-weight: 500;
-        }
-
-        /* Responsive tweaks */
-        @media (max-width: 860px) {
-            header { flex-direction: column; align-items: flex-start; }
-            .header-actions { width: 100%; }
-            .btn { flex: 1; justify-content: center; }
-            .content { padding: 14px; }
+        tr:hover {
+            background-color: #f8fafc;
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>
-            🗓️ <span>Aplikasi Jadwal MTs Tarbiyatul Banin Banat Alasdowo
-                <span class="subtitle">Editor Jadwal Anti-Bentrok &amp; Analitik Jam Mengajar Guru</span>
-            </span>
-        </h1>
-        <div class="header-actions">
-            <input type="file" id="upload-excel" accept=".xlsx, .xls" style="display: none;" onchange="importExcel(event)">
-            <button class="btn btn-primary" onclick="document.getElementById('upload-excel').click()">📥 1. Upload Form Jadwal Pelajaran 2026-2027.xlsx</button>
-            <button class="btn btn-success" id="btn-export" onclick="exportSmartExcel()" disabled style="cursor: not-allowed;">💾 2. Download Excel (Smart Export)</button>
-            <button class="btn btn-danger" onclick="clearAll()">🔄 Reset</button>
-        </div>
-    </header>
-
-    <div class="main-container">
-        <div class="content">
-            <div class="template-badge" id="template-badge">
-                💡 <b>Mode Smart Export Aktif:</b> Silakan unggah berkas <u>Form Jadwal Pelajaran 2026-2027.xlsx</u> Anda terlebih dahulu untuk mengaktifkan sistem editor.
-            </div>
-
-            <div class="navbar-classes" id="class-tabs-container">
-                </div>
-
-            <div class="conflict-panel" id="conflict-panel">
-                <h4>⚠️ Terdeteksi Peringatan Sistem Validasi:</h4>
-                <div id="conflict-list"></div>
-            </div>
-
-            <div class="table-container" id="main-workspace-container">
-                </div>
-        </div>
+<div class="card" id="mainCard">
+    <div class="header">
+        <h2>PENGUMUMAN NILAI</h2>
+        <div class="sub-header">ASTS GANJIL</div>
+        <div class="sub-title">TAHUN AJARAN 2026/2027</div>
+        <div class="mapel">PENDIDIKAN PANCASILA</div>
     </div>
 
-    <script>
-        let classes = ["VII", "VIII A", "VIII B", "IX A", "IX B"];
-        let allTabs = ["VII", "VIII A", "VIII B", "IX A", "IX B", "PIKET"];
-        let currentClass = "DASHBOARD"; 
-        let importedWorkbook = null;
-        let targetSheetName = "";
+    <div class="content-area">
+        <!-- Input Ujian -->
+        <div id="searchSection">
+            <div class="form-group">
+                <label for="inputKode">Kode Ujian ASTS Ganjil:</label>
+                <div class="direct-guide">Masukkan Kode Ujian (Contoh: <strong>2026-09-VII-01</strong>)</div>
+                <input type="text" id="inputKode" placeholder="2026-09-VII-01" autocomplete="off">
+            </div>
+            <button onclick="prosesCekNilai()">Lihat Nilai Saya</button>
+            <p id="errorMsg" class="error-msg">Kode Ujian tidak ditemukan. Periksa kembali Kode Ujian Anda.</p>
+        </div>
 
-        let modifiedClasses = {
-            "VII": false, "VIII A": false, "VIII B": false, "IX A": false, "IX B": false, "PIKET": false
-        };
+        <!-- Hasil Nilai Siswa -->
+        <div id="resultSection" class="result-card">
+            <div class="student-profile">
+                <div class="info-row">
+                    <span class="info-label">Nama</span>
+                    <span class="info-colon">:</span>
+                    <span class="info-value" id="resNama">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Kode Ujian</span>
+                    <span class="info-colon">:</span>
+                    <span class="info-value" id="resKode">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Kelas</span>
+                    <span class="info-colon">:</span>
+                    <span class="info-value" id="resKelas">-</span>
+                </div>
+            </div>
 
-        const classRowMapping = {
-            "VII": 7, "VIII A": 19, "VIII B": 31, "IX A": 43, "IX B": 55, "PIKET": 67
-        };
+            <div class="rank-box">
+                <div class="rank-title">Peringkat Kelas</div>
+                <div class="rank-value" id="resPeringkat">-</div>
+            </div>
 
-        const dayColMapping = {
-            "Sabtu": 3, "Ahad": 4, "Senin": 5, "Selasa": 6, "Rabu": 7, "Kamis": 8
-        };
+            <div class="score-grid">
+                <div class="score-box">
+                    <div class="label">Nilai PG</div>
+                    <div class="val" id="resPG">0/75</div>
+                </div>
+                <div class="score-box">
+                    <div class="label">Nilai Essai</div>
+                    <div class="val" id="resEssai">0/25</div>
+                </div>
+                <div class="score-box total-jadi">
+                    <div class="label">Total Nilai</div>
+                    <div class="val" id="resTotal">0</div>
+                </div>
+            </div>
+        </div>
 
-        const jamOffsetMapping = {
-            1: 0, 2: 1, 3: 2, 4: 3, 5: 5, 6: 6, 7: 7, 8: 9, 9: 10
-        };
+        <!-- Dashboard Rekap Admin -->
+        <div id="adminDashboardSection" class="admin-card">
+            <h3 style="font-size: 15px; color: #1e293b; margin-bottom: 10px; text-align: center;">REKAP DATA NILAI SISWA</h3>
+            <div class="form-group" style="margin-top: 0;">
+                <input type="text" id="cariAdmin" placeholder="Cari Nama / Kode..." onkeyup="filterTabelAdmin()" style="text-align: left; font-size: 13px; padding: 10px;">
+            </div>
+            <div class="table-container">
+                <table id="tabelNilaiAdmin">
+                    <thead>
+                        <tr>
+                            <th>Kode</th>
+                            <th>Nama Siswa</th>
+                            <th>Kelas</th>
+                            <th>Rank</th>
+                            <th>PG</th>
+                            <th>Essai</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyAdmin">
+                    </tbody>
+                </table>
+            </div>
+            <button onclick="kembaliKeInput()" class="btn-secondary">Keluar</button>
+        </div>
+    </div>
+</div>
 
-        const piketOffsetMapping = {
-            0: 0, 1: 1, 2: 2, 3: 3, 5: 5, 6: 6, 7: 7, 8: 9, 9: 10
-        };
+<script>
+    const PASS_ADMIN = "admin123";
 
-        const timeSlots = [
-    { jam: 1, waktu: "06.50-07.35", isBreak: false },
-    { jam: 2, waktu: "07.35-08.10", isBreak: false },
-    { jam: 3, waktu: "08.10-08.45", isBreak: false },
-    { jam: 4, waktu: "08.45-09.20", isBreak: false },
-    { jam: "-", waktu: "09.20-10.00", isBreak: true, label: "ISTIRAHAT / MBG" },
-    { jam: 5, waktu: "10.00-10.35", isBreak: false },
-    { jam: 6, waktu: "10.35-11.10", isBreak: false },
-    { jam: 7, waktu: "11.10-11.45", isBreak: false },
-    { jam: 8, waktu: "11.45-12.20", isBreak: false },
-    { jam: "-", waktu: "12.20-12.50", isBreak: true, label: "SHOLAT JAMA'AH" },
-    { jam: 9, waktu: "12.50-13.25", isBreak: false }
-];
+    const dbSiswa = {
+        "2026-09-VII-01": { nama: "ABDULLOH AZMI MUBAROK", kelas: "VII", peringkat: "8/33", pg: 42, essai: 20, total: 62 },
+        "2026-09-VII-02": { nama: "AHMAD AZIZUL RASYAD", kelas: "VII", peringkat: "22/33", pg: 30, essai: 0, total: 30 },
+        "2026-09-VII-03": { nama: "AHMAD ROFIQI ABDILLAH", kelas: "VII", peringkat: "5/33", pg: 57, essai: 10, total: 67 },
+        "2026-09-VII-04": { nama: "AHMAD ZHAFRAN CHELLO ALVARO", kelas: "VII", peringkat: "30/33", pg: 15, essai: 0, total: 15 },
+        "2026-09-VII-05": { nama: "AHMAD ZIDNI KHALWA", kelas: "VII", peringkat: "16/33", pg: 33, essai: 5, total: 38 },
+        "2026-09-VII-06": { nama: "AHYA ZUNAIROTUL KARIMA", kelas: "VII", peringkat: "4/33", pg: 48, essai: 20, total: 68 },
+        "2026-09-VII-07": { nama: "ANISA SEPTIANA AZZAHRA", kelas: "VII", peringkat: "19/33", pg: 24, essai: 10, total: 34 },
+        "2026-09-VII-08": { nama: "AZKA ALDRICK ALVARO", kelas: "VII", peringkat: "18/33", pg: 30, essai: 5, total: 35 },
+        "2026-09-VII-09": { nama: "DHIA UMI FAZILA", kelas: "VII", peringkat: "1/33", pg: 63, essai: 25, total: 88 },
+        "2026-09-VII-10": { nama: "DINA TANIA MAULIDA", kelas: "VII", peringkat: "17/33", pg: 21, essai: 15, total: 36 },
+        "2026-09-VII-11": { nama: "KANZA SAFIYA NADA", kelas: "VII", peringkat: "14/33", pg: 27, essai: 15, total: 42 },
+        "2026-09-VII-12": { nama: "M. NAZRIL AZZAM", kelas: "VII", peringkat: "12/33", pg: 36, essai: 10, total: 46 },
+        "2026-09-VII-13": { nama: "MAYA DWI ASTUTIK", kelas: "VII", peringkat: "28/33", pg: 18, essai: 5, total: 23 },
+        "2026-09-VII-14": { nama: "MOHAMMAD IQBAL SAPUTRA", kelas: "VII", peringkat: "23/33", pg: 24, essai: 5, total: 29 },
+        "2026-09-VII-15": { nama: "MUHAMMAD DAFFA IBNU HAFIZ", kelas: "VII", peringkat: "21/33", pg: 21, essai: 10, total: 31 },
+        "2026-09-VII-16": { nama: "MUHAMMAD KHOIRUR ROZIQIN", kelas: "VII", peringkat: "25/33", pg: 27, essai: 0, total: 27 },
+        "2026-09-VII-17": { nama: "MUHAMMAD NAILUL IZZI", kelas: "VII", peringkat: "20/33", pg: 33, essai: 0, total: 33 },
+        "2026-09-VII-18": { nama: "MUHAMMAD NIZAM ARSYIFA", kelas: "VII", peringkat: "11/33", pg: 42, essai: 5, total: 47 },
+        "2026-09-VII-19": { nama: "MUHAMMAD NURIL KHITAM", kelas: "VII", peringkat: "24/33", pg: 24, essai: 5, total: 29 },
+        "2026-09-VII-20": { nama: "MUHAMMAD NURUN MUJTABA", kelas: "VII", peringkat: "27/33", pg: 24, essai: 0, total: 24 },
+        "2026-09-VII-21": { nama: "MUHAMMAD RIF'AN ARIF", kelas: "VII", peringkat: "3/33", pg: 54, essai: 20, total: 74 },
+        "2026-09-VII-22": { nama: "MUHAMMAD SALMAN FAIDLURROHMAN", kelas: "VII", peringkat: "13/33", pg: 30, essai: 15, total: 45 },
+        "2026-09-VII-23": { nama: "MUHAMMAD SOBIBUR ROHMAN", kelas: "VII", peringkat: "15/33", pg: 24, essai: 15, total: 39 },
+        "2026-09-VII-24": { nama: "MUHAMMAD ZAKI RAMADHAN", kelas: "VII", peringkat: "29/33", pg: 18, essai: 0, total: 18 },
+        "2026-09-VII-25": { nama: "NASHWA KAYLA UNAF", kelas: "VII", peringkat: "6/33", pg: 51, essai: 15, total: 66 },
+        "2026-09-VII-26": { nama: "NUR HIKMATUL KHAROMAH", kelas: "VII", peringkat: "2/33", pg: 57, essai: 20, total: 77 },
+        "2026-09-VII-27": { nama: "NUR LAILATUN NI'MAH", kelas: "VII", peringkat: "7/33", pg: 45, essai: 20, total: 65 },
+        "2026-09-VII-28": { nama: "NUR MUHAMMAD FABIANSYAH ARYANTO", kelas: "VII", peringkat: "9/33", pg: 51, essai: 10, total: 61 },
+        "2026-09-VII-29": { nama: "NURUL IZZAH ABYANUSSALWA", kelas: "VII", peringkat: "10/33", pg: 36, essai: 15, total: 51 },
+        "2026-09-VII-30": { nama: "RAMA DIAN ADITIYA", kelas: "VII", peringkat: "31/33", pg: 15, essai: 0, total: 15 },
+        "2026-09-VII-31": { nama: "ROCHIM ELVIN RAFLISYON", kelas: "VII", peringkat: "32/33", pg: 15, essai: 0, total: 15 },
+        "2026-09-VII-32": { nama: "ROCHMAN ELVAN RAFLISYON", kelas: "VII", peringkat: "33/33", pg: 12, essai: 0, total: 12 },
+        "2026-09-VII-33": { nama: "SAFIRA PUTRI RAMADHANI", kelas: "VII", peringkat: "26/33", pg: 21, essai: 5, total: 26 },
+        "2026-09-VIII-01": { nama: "ADELIA JAZAHRA PUTRI", kelas: "VIII A", peringkat: "5/20", pg: 69, essai: 25, total: 94 },
+        "2026-09-VIII-02": { nama: "ADELIA JAZILA PUTRI", kelas: "VIII A", peringkat: "20/20", pg: 30, essai: 25, total: 55 },
+        "2026-09-VIII-03": { nama: "ADIBA NAZILATUL HUSNA", kelas: "VIII A", peringkat: "3/20", pg: 75, essai: 20, total: 95 },
+        "2026-09-VIII-04": { nama: "AILLIYIN", kelas: "VIII A", peringkat: "5/20", pg: 69, essai: 25, total: 94 },
+        "2026-09-VIII-05": { nama: "ALENA NOR FADILA", kelas: "VIII A", peringkat: "12/20", pg: 69, essai: 20, total: 89 },
+        "2026-09-VIII-06": { nama: "ANGGUN TRIHAPSARI", kelas: "VIII A", peringkat: "12/20", pg: 69, essai: 20, total: 89 },
+        "2026-09-VIII-07": { nama: "ANNISA WIDYAWATI", kelas: "VIII A", peringkat: "1/20", pg: 72, essai: 25, total: 97 },
+        "2026-09-VIII-08": { nama: "ATANA IZZU NAJAKHUNA", kelas: "VIII A", peringkat: "17/20", pg: 60, essai: 20, total: 80 },
+        "2026-09-VIII-09": { nama: "AULIYA EKA SYAFARA", kelas: "VIII A", peringkat: "11/20", pg: 66, essai: 25, total: 91 },
+        "2026-09-VIII-10": { nama: "CAHAYA NAILA FARADIS ELIZZA", kelas: "VIII A", peringkat: "1/20", pg: 72, essai: 25, total: 97 },
+        "2026-09-VIII-11": { nama: "EFA MUNISATUL ULYA", kelas: "VIII A", peringkat: "15/20", pg: 60, essai: 25, total: 85 },
+        "2026-09-VIII-12": { nama: "ELSAWATI", kelas: "VIII A", peringkat: "5/20", pg: 69, essai: 25, total: 94 },
+        "2026-09-VIII-13": { nama: "GRECCIA ZAHRA BERLENIA", kelas: "VIII A", peringkat: "5/20", pg: 69, essai: 25, total: 94 },
+        "2026-09-VIII-14": { nama: "KHOLISHOTUL KUMALA", kelas: "VIII A", peringkat: "19/20", pg: 54, essai: 25, total: 79 },
+        "2026-09-VIII-15": { nama: "LAILATUL QOMARIYYAH SILVIA", kelas: "VIII A", peringkat: "14/20", pg: 66, essai: 20, total: 86 },
+        "2026-09-VIII-16": { nama: "NAURA HASNA ANNINDA", kelas: "VIII A", peringkat: "5/20", pg: 69, essai: 25, total: 94 },
+        "2026-09-VIII-17": { nama: "SALSA SAILA DIANA", kelas: "VIII A", peringkat: "3/20", pg: 75, essai: 20, total: 95 },
+        "2026-09-VIII-18": { nama: "SRI MARIYATI", kelas: "VIII A", peringkat: "16/20", pg: 63, essai: 20, total: 83 },
+        "2026-09-VIII-19": { nama: "ZAILA ALIBFIA VEDA", kelas: "VIII A", peringkat: "17/20", pg: 60, essai: 20, total: 80 },
+        "2026-09-VIII-20": { nama: "ZAKIYYATUN NAFSIYYAH", kelas: "VIII A", peringkat: "5/20", pg: 69, essai: 25, total: 94 },
+        "2026-09-VIII-21": { nama: "AFIQ OKTAFIANTORO", kelas: "VIII B", peringkat: "22/23", pg: 33, essai: 0, total: 33 },
+        "2026-09-VIII-22": { nama: "AHMAD DAVIN ADITYA PRATAMA", kelas: "VIII B", peringkat: "18/23", pg: 51, essai: 15, total: 66 },
+        "2026-09-VIII-23": { nama: "AHMAD NADZIF IHSAN", kelas: "VIII B", peringkat: "6/23", pg: 66, essai: 25, total: 91 },
+        "2026-09-VIII-24": { nama: "AHMAD NAIZAR RIZQI ABDILLAH", kelas: "VIII B", peringkat: "8/23", pg: 69, essai: 20, total: 89 },
+        "2026-09-VIII-25": { nama: "AHMAD RAFFI ANWAR", kelas: "VIII B", peringkat: "10/23", pg: 66, essai: 20, total: 86 },
+        "2026-09-VIII-26": { nama: "AHSIN BIMAULAHUL 'ALI", kelas: "VIII B", peringkat: "8/23", pg: 69, essai: 20, total: 89 },
+        "2026-09-VIII-27": { nama: "ANDIKA DWI SAPUTRA", kelas: "VIII B", peringkat: "20/23", pg: 51, essai: 0, total: 51 },
+        "2026-09-VIII-28": { nama: "BADAI BAYU WIGUNA", kelas: "VIII B", peringkat: "1/23", pg: 75, essai: 20, total: 95 },
+        "2026-09-VIII-29": { nama: "BURHAN PRATAMA AL-KHAFIDZ", kelas: "VIII B", peringkat: "3/23", pg: 72, essai: 20, total: 92 },
+        "2026-09-VIII-30": { nama: "CHELSY AHMAD CASYAVANI", kelas: "VIII B", peringkat: "13/23", pg: 54, essai: 20, total: 74 },
+        "2026-09-VIII-31": { nama: "KELVIN BAGUS PURNAMA", kelas: "VIII B", peringkat: "13/23", pg: 54, essai: 20, total: 74 },
+        "2026-09-VIII-32": { nama: "KHANVA KHASBIYA RIZQI", kelas: "VIII B", peringkat: "3/23", pg: 72, essai: 20, total: 92 },
+        "2026-09-VIII-33": { nama: "MOH JOHAN AFRIANTO", kelas: "VIII B", peringkat: "19/23", pg: 48, essai: 15, total: 63 },
+        "2026-09-VIII-34": { nama: "MOHAMMAD ILHAM KHOIRUL AMIN", kelas: "VIII B", peringkat: "17/23", pg: 42, essai: 25, total: 67 },
+        "2026-09-VIII-35": { nama: "MUH ILYAS ZAKARIA ARDIYANSAH", kelas: "VIII B", peringkat: "15/23", pg: 51, essai: 20, total: 71 },
+        "2026-09-VIII-36": { nama: "MUHAMMAD FARIH AULIA ASFA", kelas: "VIII B", peringkat: "6/23", pg: 66, essai: 25, total: 91 },
+        "2026-09-VIII-37": { nama: "MUHAMMAD HAYFA ASFA", kelas: "VIII B", peringkat: "12/23", pg: 57, essai: 20, total: 77 },
+        "2026-09-VIII-38": { nama: "MUHAMMAD HILMI ZIDNA", kelas: "VIII B", peringkat: "1/23", pg: 75, essai: 20, total: 95 },
+        "2026-09-VIII-39": { nama: "MUHAMMAD KHAIRUL IHSAN", kelas: "VIII B", peringkat: "11/23", pg: 57, essai: 25, total: 82 },
+        "2026-09-VIII-40": { nama: "MUHAMMAD NAZRIL ILHAM", kelas: "VIII B", peringkat: "15/23", pg: 51, essai: 20, total: 71 },
+        "2026-09-VIII-41": { nama: "MUHAMMAD VEBRI ZIO", kelas: "VIII B", peringkat: "21/23", pg: 15, essai: 25, total: 40 },
+        "2026-09-VIII-42": { nama: "RENDI ADITYA", kelas: "VIII B", peringkat: "23/23", pg: 21, essai: 0, total: 21 },
+        "2026-09-VIII-43": { nama: "RIKI BUDI SETYAWAN", kelas: "VIII B", peringkat: "3/23", pg: 72, essai: 20, total: 92 },
+        "2026-09-IX-01": { nama: "AHMAD EDI SETIAWAN", kelas: "IX A", peringkat: "15/19", pg: 24, essai: 10, total: 34 },
+        "2026-09-IX-02": { nama: "AHMAD NAJIH 'AZAM NABHAN", kelas: "IX A", peringkat: "1/19", pg: 57, essai: 20, total: 77 },
+        "2026-09-IX-03": { nama: "ALFITO DIANOVA", kelas: "IX A", peringkat: "9/19", pg: 21, essai: 20, total: 41 },
+        "2026-09-IX-04": { nama: "AULIA WIDYA AZ ZAHRA", kelas: "IX A", peringkat: "8/19", pg: 27, essai: 15, total: 42 },
+        "2026-09-IX-05": { nama: "DYAH AYU SITI NUR AINI", kelas: "IX A", peringkat: "5/19", pg: 36, essai: 10, total: 46 },
+        "2026-09-IX-06": { nama: "I'IS FAIZATUN NIKMAH", kelas: "IX A", peringkat: "14/19", pg: 30, essai: 5, total: 35 },
+        "2026-09-IX-07": { nama: "LYLA NUR RAHMADANI", kelas: "IX A", peringkat: "11/19", pg: 27, essai: 10, total: 37 },
+        "2026-09-IX-08": { nama: "MOH FAUZI ANWAR", kelas: "IX A", peringkat: "19/19", pg: 15, essai: 0, total: 15 },
+        "2026-09-IX-09": { nama: "MOH FIKA AJRIYA ROMADHONA", kelas: "IX A", peringkat: "13/19", pg: 21, essai: 15, total: 36 },
+        "2026-09-IX-10": { nama: "MUHAMMAD ANANDA SUSANTO", kelas: "IX A", peringkat: "4/19", pg: 36, essai: 15, total: 51 },
+        "2026-09-IX-11": { nama: "MUHAMMAD IBHAM ROSHADI", kelas: "IX A", peringkat: "7/19", pg: 33, essai: 10, total: 43 },
+        "2026-09-IX-12": { nama: "MUHAMMAD KHOIRUL ANAM", kelas: "IX A", peringkat: "3/19", pg: 42, essai: 20, total: 62 },
+        "2026-09-IX-13": { nama: "MUHAMMAD NAFARIL MUJTABA", kelas: "IX A", peringkat: "2/19", pg: 51, essai: 15, total: 66 },
+        "2026-09-IX-14": { nama: "MUHAMMAD RESSA ARIESTYA", kelas: "IX A", peringkat: "18/19", pg: 15, essai: 10, total: 25 },
+        "2026-09-IX-15": { nama: "MUHAMMAD SYAHRUL AHSIN", kelas: "IX A", peringkat: "17/19", pg: 21, essai: 5, total: 26 },
+        "2026-09-IX-16": { nama: "NA'IMA NAHARI ZULFA", kelas: "IX A", peringkat: "10/19", pg: 30, essai: 10, total: 40 },
+        "2026-09-IX-17": { nama: "RIZKA PRATAMA ABDIYANTI", kelas: "IX A", peringkat: "11/19", pg: 27, essai: 10, total: 37 },
+        "2026-09-IX-18": { nama: "SELLA PUSPITA SARI", kelas: "IX A", peringkat: "16/19", pg: 21, essai: 10, total: 31 },
+        "2026-09-IX-19": { nama: "TIRTA ADRIAN IHKSANI", kelas: "IX A", peringkat: "6/19", pg: 30, essai: 15, total: 45 },
+        "2026-09-IX-20": { nama: "ABDURROHMAN SAIFUL ULUM", kelas: "IX B", peringkat: "19/19", pg: 24, essai: 0, total: 24 },
+        "2026-09-IX-21": { nama: "AHMAD ALFA ARMIYA", kelas: "IX B", peringkat: "6/19", pg: 42, essai: 5, total: 47 },
+        "2026-09-IX-22": { nama: "AHMAD REYVANO FEBRIAN", kelas: "IX B", peringkat: "6/19", pg: 42, essai: 5, total: 47 },
+        "2026-09-IX-23": { nama: "AHMAD REZA  PRATAMA", kelas: "IX B", peringkat: "21/19", pg: 21, essai: 0, total: 21 },
+        "2026-09-IX-24": { nama: "ANISA MAYLIRA SALSABILA", kelas: "IX B", peringkat: "14/19", pg: 27, essai: 5, total: 32 },
+        "2026-09-IX-25": { nama: "AQILLA AULIANNASYA", kelas: "IX B", peringkat: "13/19", pg: 30, essai: 5, total: 35 },
+        "2026-09-IX-26": { nama: "AZKIA CHOIRUN NADA", kelas: "IX B", peringkat: "6/19", pg: 27, essai: 20, total: 47 },
+        "2026-09-IX-27": { nama: "HALWA QOTHRUN NADA", kelas: "IX B", peringkat: "4/19", pg: 30, essai: 25, total: 55 },
+        "2026-09-IX-28": { nama: "KAYYISA GHANIA AFRIN", kelas: "IX B", peringkat: "5/19", pg: 39, essai: 15, total: 54 },
+        "2026-09-IX-29": { nama: "MARVEL DIKY PRATAMA", kelas: "IX B", peringkat: "12/19", pg: 36, essai: 0, total: 36 },
+        "2026-09-IX-30": { nama: "MIBTAKHUL FALAK", kelas: "IX B", peringkat: "17/19", pg: 27, essai: 0, total: 27 },
+        "2026-09-IX-31": { nama: "MOH OZZI NANINDRA PUTRA PRATAMA", kelas: "IX B", peringkat: "22/19", pg: 15, essai: 0, total: 15 },
+        "2026-09-IX-32": { nama: "MUH KHOIRUN NIZAM", kelas: "IX B", peringkat: "10/19", pg: 33, essai: 10, total: 43 },
+        "2026-09-IX-33": { nama: "MUHAMMAD ARIYA WAHYU MAULANA", kelas: "IX B", peringkat: "16/19", pg: 15, essai: 15, total: 30 },
+        "2026-09-IX-34": { nama: "MUHAMMAD MAHSUN HILMI", kelas: "IX B", peringkat: "20/19", pg: 18, essai: 5, total: 23 },
+        "2026-09-IX-35": { nama: "MUHAMMAD NIZAM ABDILLAH", kelas: "IX B", peringkat: "15/19", pg: 21, essai: 10, total: 31 },
+        "2026-09-IX-36": { nama: "MUHAMMAD RIO ARDIANTO", kelas: "IX B", peringkat: "17/19", pg: 27, essai: 0, total: 27 },
+        "2026-09-IX-37": { nama: "NABILA SYAILA YUNIAR", kelas: "IX B", peringkat: "2/19", pg: 54, essai: 25, total: 79 },
+        "2026-09-IX-38": { nama: "NANDIFA KHOIRIN NEYSA", kelas: "IX B", peringkat: "11/19", pg: 27, essai: 15, total: 42 },
+        "2026-09-IX-39": { nama: "NOVA ALENNA PUTRI", kelas: "IX B", peringkat: "1/19", pg: 60, essai: 20, total: 80 },
+        "2026-09-IX-40": { nama: "YUNIA NUR AFIQAH", kelas: "IX B", peringkat: "3/19", pg: 33, essai: 25, total: 58 },
+        "2026-09-IX-41": { nama: "ZAHRA AF'IDA TAQIYYA", kelas: "IX B", peringkat: "9/19", pg: 30, essai: 15, total: 45 }
+    };
 
-        const piketTimeSlots = [
-    { jam: 0, waktu: "06.30-07.00", isBreak: false },
-    { jam: 1, waktu: "06.50-07.35", isBreak: false },
-    { jam: 2, waktu: "07.35-08.10", isBreak: false },
-    { jam: 3, waktu: "08.10-08.45", isBreak: false },
-    { jam: 4, waktu: "08.45-09.20", isBreak: false },
-    { jam: "-", waktu: "09.20-10.00", isBreak: true, label: "ISTIRAHAT" },
-    { jam: 5, waktu: "10.00-10.35", isBreak: false },
-    { jam: 6, waktu: "10.35-11.10", isBreak: false },
-    { jam: 7, waktu: "11.10-11.45", isBreak: false },
-    { jam: 8, waktu: "11.45-12.20", isBreak: false },
-    { jam: "-", waktu: "12.20-12.50", isBreak: true, label: "SHOLAT JAMA'AH" },
-    { jam: 9, waktu: "12.50-13.25", isBreak: false }
-];
+    function prosesCekNilai() {
+        const inputVal = document.getElementById("inputKode").value.trim();
+        const inputUpper = inputVal.toUpperCase();
+        const errorMsg = document.getElementById("errorMsg");
 
-        const days = ["Sabtu", "Ahad", "Senin", "Selasa", "Rabu", "Kamis"];
-
-        // ATURAN TETAP JADWAL PELAJARAN:
-        // 1) Setiap hari Senin jam ke-1, semua kelas otomatis "UP" (Upacara Bendera), tidak bisa diedit manual.
-        const UPACARA_CODE = "UP";
-        // 2) Khusus hari Sabtu, Rabu, dan Kamis, KBM (jam mapel) hanya sampai jam ke-8 (tidak ada jam ke-9).
-        const NO_NINTH_HOUR_DAYS = ["Sabtu", "Rabu", "Kamis"];
-
-        let defaultTeachers = [
-            {"kg": "A", "nama": "M. Syakroni, S.Pd.I", "mapel": "Fiqih", "quota": {"VII": 0, "VIII A": 0, "VIII B": 0, "IX A": 2, "IX B": 2}, "total": 4},
-            {"kg": "B", "nama": "H. Ahmad Romlan", "mapel": "Hadits", "quota": {"VII": 2, "VIII A": 2, "VIII B": 2, "IX A": 2, "IX B": 2}, "total": 10},
-            {"kg": "C", "nama": "H. Ahmad Suyuthi", "mapel": "Taqrib", "quota": {"VII": 0, "VIII A": 0, "VIII B": 0, "IX A": 2, "IX B": 2}, "total": 4},
-            {"kg": "D1", "nama": "M Farid Bustomi,S.Pd.I", "mapel": "Fiqih", "quota": {"VII": 0, "VIII A": 2, "VIII B": 2, "IX A": 0, "IX B": 0}, "total": 4},
-            {"kg": "D2", "nama": "M Farid Bustomi,S.Pd.I", "mapel": "Taqrib", "quota": {"VII": 2, "VIII A": 2, "VIII B": 2, "IX A": 0, "IX B": 0}, "total": 6},
-            {"kg": "E", "nama": "Drs. Ali Imron", "mapel": "Pkn", "quota": {"VII": 0, "VIII A": 0, "VIII B": 0, "IX A": 2, "IX B": 2}, "total": 4},
-            {"kg": "F", "nama": "Zainul Hasan, S.Pd.I", "mapel": "IPA", "quota": {"VII": 3, "VIII A": 4, "VIII B": 4, "IX A": 4, "IX B": 4}, "total": 19},
-            {"kg": "G", "nama": "Rubi'ah, S.Sos", "mapel": "IPS", "quota": {"VII": 4, "VIII A": 4, "VIII B": 4, "IX A": 4, "IX B": 4}, "total": 20},
-            {"kg": "H", "nama": "M. Syafiq", "mapel": "Informatika", "quota": {"VII": 2, "VIII A": 2, "VIII B": 2, "IX A": 2, "IX B": 2}, "total": 10},
-            {"kg": "I", "nama": "Yuyun Eva Nauli, S.Pd.I", "mapel": "Bahasa Indonesia", "quota": {"VII": 4, "VIII A": 4, "VIII B": 4, "IX A": 4, "IX B": 4}, "total": 20},
-            {"kg": "J1", "nama": "Nurul Winayanti, S.Pd.I", "mapel": "Qur'an Hadits", "quota": {"VII": 2, "VIII A": 2, "VIII B": 2, "IX A": 2, "IX B": 2}, "total": 10},
-            {"kg": "J2", "nama": "Nurul Winayanti, S.Pd.I", "mapel": "Akidah Akhlak", "quota": {"VII": 2, "VIII A": 0, "VIII B": 0, "IX A": 2, "IX B": 2}, "total": 6},
-            {"kg": "K", "nama": "Ummi Khoiriyah, S.S", "mapel": "Bahasa Inggris", "quota": {"VII": 3, "VIII A": 4, "VIII B": 4, "IX A": 4, "IX B": 4}, "total": 19},
-            {"kg": "L", "nama": "H. Nur Fatikhin, S.Pd.I", "mapel": "Matematika", "quota": {"VII": 4, "VIII A": 0, "VIII B": 0, "IX A": 0, "IX B": 0}, "total": 4},
-            {"kg": "M", "nama": "Ruklimah, S.Pd", "mapel": "Matematika", "quota": {"VII": 0, "VIII A": 4, "VIII B": 4, "IX A": 4, "IX B": 4}, "total": 16},
-            {"kg": "N1", "nama": "Muh Qosim", "mapel": "Akidah Akhlak", "quota": {"VII": 0, "VIII A": 2, "VIII B": 2, "IX A": 0, "IX B": 0}, "total": 4},
-            {"kg": "N2", "nama": "Muh Qosim", "mapel": "Ta'lim", "quota": {"VII": 2, "VIII A": 0, "VIII B": 0, "IX A": 0, "IX B": 0}, "total": 2},
-            {"kg": "O", "nama": "Ah. Jalaluddin", "mapel": "Tafsir", "quota": {"VII": 2, "VIII A": 2, "VIII B": 2, "IX A": 2, "IX B": 2}, "total": 10},
-            {"kg": "P1", "nama": "Miftahul Rois, S,Pd.I", "mapel": "Ta'lim", "quota": {"VII": 0, "VIII A": 0, "VIII B": 0, "IX A": 2, "IX B": 2}, "total": 4},
-            {"kg": "P2", "nama": "Miftahul Rois, S,Pd.I", "mapel": "Nahwu", "quota": {"VII": 2, "VIII A": 2, "VIII B": 2, "IX A": 0, "IX B": 0}, "total": 6},
-            {"kg": "Q", "nama": "Abdul Malik", "mapel": "Nahwu", "quota": {"VII": 0, "VIII A": 0, "VIII B": 0, "IX A": 2, "IX B": 2}, "total": 4},
-            {"kg": "R", "nama": "H. Mustaghfirin, S.Pd.I", "mapel": "Ta'lim", "quota": {"VII": 0, "VIII A": 2, "VIII B": 2, "IX A": 0, "IX B": 0}, "total": 4},
-            {"kg": "S", "nama": "Yuyun Eva Maulin, S.Pd.I", "mapel": "Bahasa Arab", "quota": {"VII": 2, "VIII A": 2, "VIII B": 2, "IX A": 2, "IX B": 2}, "total": 10},
-            {"kg": "T", "nama": "Moh Miftahuddin, S.Pd", "mapel": "Bahasa Jawa", "quota": {"VII": 2, "VIII A": 2, "VIII B": 2, "IX A": 2, "IX B": 2}, "total": 10},
-            {"kg": "U", "nama": "M Faisal Majid, S.Or", "mapel": "PJOK", "quota": {"VII": 2, "VIII A": 2, "VIII B": 2, "IX A": 2, "IX B": 2}, "total": 10},
-            {"kg": "V", "nama": "Azmul Riza", "mapel": "Pkn", "quota": {"VII": 2, "VIII A": 2, "VIII B": 2, "IX A": 0, "IX B": 0}, "total": 6},
-            {"kg": "W1", "nama": "Khotibul Umam, S.Pd.I", "mapel": "SKI", "quota": {"VII": 2, "VIII A": 2, "VIII B": 2, "IX A": 2, "IX B": 2}, "total": 10},
-            {"kg": "W2", "nama": "Khotibul Umam, S.Pd.I", "mapel": "Seni Budaya", "quota": {"VII": 2, "VIII A": 2, "VIII B": 2, "IX A": 2, "IX B": 2}, "total": 10},
-            {"kg": "X1", "nama": "Muh Yusuf Abdillah", "mapel": "Fikih", "quota": {"VII": 2, "VIII A": 0, "VIII B": 0, "IX A": 0, "IX B": 0}, "total": 2},
-            {"kg": "X2", "nama": "Muh Yusuf Abdillah", "mapel": "Fasholatan", "quota": {"VII": 2, "VIII A": 0, "VIII B": 0, "IX A": 0, "IX B": 0}, "total": 2}
-        ];
-
-        function calcTotal(t) {
-            return classes.reduce((acc, c) => acc + (Number(t.quota[c]) || 0), 0);
+        if (inputVal === PASS_ADMIN) {
+            errorMsg.style.display = "none";
+            document.getElementById("searchSection").style.display = "none";
+            document.getElementById("mainCard").classList.add("admin-mode");
+            
+            muatTabelAdmin();
+            document.getElementById("adminDashboardSection").style.display = "block";
+            return;
         }
 
-        function loadTeachers() {
-            const saved = localStorage.getItem('mts_teachers_data');
-            if (saved) {
-                try {
-                    const parsed = JSON.parse(saved);
-                    if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-                } catch (e) { }
-            }
-            return JSON.parse(JSON.stringify(defaultTeachers));
-        }
+        const siswa = dbSiswa[inputUpper];
 
-        function saveTeachers() {
-            localStorage.setItem('mts_teachers_data', JSON.stringify(teachers));
-        }
+        if (siswa) {
+            errorMsg.style.display = "none";
+            document.getElementById("searchSection").style.display = "none";
 
-        let teachers = loadTeachers();
-        let scheduleStore = {};
+            document.getElementById("resNama").textContent = siswa.nama;
+            document.getElementById("resKode").textContent = inputUpper;
+            document.getElementById("resKelas").textContent = siswa.kelas;
+            document.getElementById("resPeringkat").textContent = siswa.peringkat;
+            document.getElementById("resPG").textContent = siswa.pg + "/75";
+            document.getElementById("resEssai").textContent = siswa.essai + "/25";
+            document.getElementById("resTotal").textContent = siswa.total;
 
-        function initStore() {
-            allTabs.forEach(t => {
-                scheduleStore[t] = {};
-                let currentSlots = (t === "PIKET") ? piketTimeSlots : timeSlots;
-                currentSlots.forEach(ts => {
-                    if(!ts.isBreak) {
-                        scheduleStore[t][ts.jam] = {};
-                        days.forEach(d => { scheduleStore[t][ts.jam][d] = ""; });
-                    }
-                });
-            });
-            Object.keys(modifiedClasses).forEach(k => modifiedClasses[k] = false);
-            normalizeFixedSlots();
-        }
-
-        // Memaksa nilai sel-sel yang sudah ditetapkan aturan tetap (Upacara Senin jam-1,
-        // dan tidak ada jam ke-9 di hari Sabtu/Rabu/Kamis) agar selalu konsisten,
-        // baik saat data baru diinisialisasi, dimuat dari localStorage, maupun diimpor dari Excel.
-        function normalizeFixedSlots() {
-            classes.forEach(c => {
-                if (scheduleStore[c] && scheduleStore[c][1]) {
-                    scheduleStore[c][1]["Senin"] = UPACARA_CODE;
-                }
-                if (scheduleStore[c] && scheduleStore[c][9]) {
-                    NO_NINTH_HOUR_DAYS.forEach(d => {
-                        scheduleStore[c][9][d] = "";
-                    });
-                }
-            });
-        }
-
-        if (localStorage.getItem('mts_schedule_data')) {
-            scheduleStore = JSON.parse(localStorage.getItem('mts_schedule_data'));
-            if(localStorage.getItem('mts_modified_flags')) {
-                modifiedClasses = JSON.parse(localStorage.getItem('mts_modified_flags'));
-            }
-            normalizeFixedSlots();
+            document.getElementById("resultSection").style.display = "block";
         } else {
-            initStore();
+            errorMsg.style.display = "block";
         }
+    }
 
-        function initApp() {
-            renderTabs();
-            renderWorkspace();
-            validateAll();
-            
-            if(sessionStorage.getItem('excel_loaded')) {
-                enableExportButton();
-            }
-        }
+    function muatTabelAdmin() {
+        const tbody = document.getElementById("tbodyAdmin");
+        tbody.innerHTML = "";
 
-        function enableExportButton() {
-            const btn = document.getElementById('btn-export');
-            btn.disabled = false;
-            btn.style.opacity = "1";
-            btn.style.cursor = "pointer";
-            document.getElementById('template-badge').innerHTML = "🎉 <b>Template Excel Terkunci!</b> Hasil Smart Export akan mengganti sel yang Anda edit saja, area lain tetap 100% identik asli.";
-            document.getElementById('template-badge').style.backgroundColor = "#d4edda";
-            document.getElementById('template-badge').style.color = "#155724";
-            document.getElementById('template-badge').style.borderLeft = "5px solid var(--success)";
-        }
-
-        function renderTabs() {
-            const container = document.getElementById('class-tabs-container');
-            container.innerHTML = "";
-            
-            const dashBtn = document.createElement('button');
-            dashBtn.className = `class-tab btn-dashboard ${currentClass === 'DASHBOARD' ? 'active' : ''}`;
-            dashBtn.innerHTML = "📊 Dashboard & Statistik Guru";
-            dashBtn.onclick = () => {
-                currentClass = "DASHBOARD";
-                renderTabs();
-                renderWorkspace();
-            };
-            container.appendChild(dashBtn);
-
-            classes.forEach(c => {
-                const btn = document.createElement('button');
-                btn.className = `class-tab ${c === currentClass ? 'active' : ''}`;
-                btn.innerText = `Kelas ${c} ${modifiedClasses[c] ? '✍️' : ''}`;
-                btn.onclick = () => {
-                    currentClass = c;
-                    renderTabs();
-                    renderWorkspace();
-                };
-                container.appendChild(btn);
-            });
-
-            const piketBtn = document.createElement('button');
-            piketBtn.className = `class-tab btn-piket-tab ${currentClass === 'PIKET' ? 'active' : ''}`;
-            piketBtn.innerHTML = `📌 Piket Guru ${modifiedClasses['PIKET'] ? '✍️' : ''}`;
-            piketBtn.onclick = () => {
-                currentClass = "PIKET";
-                renderTabs();
-                renderWorkspace();
-            };
-            container.appendChild(piketBtn);
-
-            const guruBtn = document.createElement('button');
-            guruBtn.className = `class-tab btn-guru-tab ${currentClass === 'GURU' ? 'active' : ''}`;
-            guruBtn.innerHTML = `🧑‍🏫 Kelola Data Guru &amp; Kuota`;
-            guruBtn.onclick = () => {
-                currentClass = "GURU";
-                renderTabs();
-                renderWorkspace();
-            };
-            container.appendChild(guruBtn);
-        }
-
-        function renderWorkspace() {
-            const container = document.getElementById('main-workspace-container');
-            container.innerHTML = "";
-
-            if (currentClass === "DASHBOARD") {
-                renderDashboard(container);
-            } else if (currentClass === "PIKET") {
-                renderPiketTable(container);
-            } else if (currentClass === "GURU") {
-                renderGuruEditor(container);
-            } else {
-                renderScheduleTable(container);
-            }
-        }
-
-        function renderDashboard(container) {
-            let totalQuotaSemuaGuru = teachers.reduce((acc, curr) => acc + calcTotal(curr), 0);
-            
-            let hitungRealisasi = {};
-            teachers.forEach(t => {
-                hitungRealisasi[t.kg] = {
-                    globalTotal: 0,
-                    breakdown: { "VII": 0, "VIII A": 0, "VIII B": 0, "IX A": 0, "IX B": 0 }
-                };
-            });
-            
-            let jamTerisiGlobal = 0;
-            classes.forEach(c => {
-                timeSlots.forEach(ts => {
-                    if(!ts.isBreak) {
-                        days.forEach(d => {
-                            let val = (scheduleStore[c][ts.jam][d] || "").toUpperCase().trim();
-                            if(val && hitungRealisasi[val] !== undefined) {
-                                hitungRealisasi[val].breakdown[c] += 1;
-                                hitungRealisasi[val].globalTotal += 1;
-                                jamTerisiGlobal += 1;
-                            }
-                        });
-                    }
-                });
-            });
-
-            let uniqueTeacherNames = new Set(teachers.map(t => t.nama.trim()));
-            let realTeacherCount = uniqueTeacherNames.size;
-            let persenGlobal = Math.round((jamTerisiGlobal / totalQuotaSemuaGuru) * 100) || 0;
-
-            let dashHTML = `
-                <div class="dashboard-container">
-                    <h2>📊 Analitik & Ringkasan Pemenuhan Jam Mengajar Guru</h2>
-                    
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div>Total Jam Mengajar Terisi (Global)</div>
-                            <div class="stat-val">${jamTerisiGlobal} / ${totalQuotaSemuaGuru} JP</div>
-                            <div class="teacher-progress" style="margin-top:10px;">
-                                <div class="progress-bar" style="width: ${persenGlobal}%;"></div>
-                            </div>
-                            <div style="font-size:11px; margin-top:4px; text-align:right;">${persenGlobal}% Selesai</div>
-                        </div>
-                        <div class="stat-card">
-                            <div>Total Guru Fisik Aktif</div>
-                            <div class="stat-val">${realTeacherCount} Orang</div>
-                        </div>
-                        <div class="stat-card">
-                            <div>Rombongan Belajar (Rombel)</div>
-                            <div class="stat-val">${classes.length} Rombel </div>
-                        </div>
-                    </div>
-
-                    <h3 style="margin-top: 10px;">📋 Ringkasan Jam Tiap Kelas Bagi Gurunya (Realisasi / Kuota)</h3>
-                    <div class="hint-text" style="margin-top:-4px;">
-                        Angka ditulis <b>realisasi/kuota</b> tiap kelas &nbsp;
-                        <span style="color:var(--success); font-weight:700;">■</span> pas &nbsp;
-                        <span style="color:var(--warning); font-weight:700;">■</span> kurang &nbsp;
-                        <span style="color:var(--danger); font-weight:700;">■</span> lebih
-                    </div>
-                    <table style="margin-top: 8px;">
-                        <thead>
-                            <tr>
-                                <th rowspan="2">Kode</th>
-                                <th rowspan="2">Nama</th>
-                                <th rowspan="2">Mata Pelajaran</th>
-                                <th colspan="5">Kelas (Realisasi/Kuota)</th>
-                                <th rowspan="2">Jumlah (Realisasi)</th>
-                                <th rowspan="2">Target Kuota</th>
-                                <th rowspan="2">Status Pemenuhan</th>
-                            </tr>
-                            <tr>
-                                <th>VII</th>
-                                <th>VIII A</th>
-                                <th>VIII B</th>
-                                <th>IX A</th>
-                                <th>IX B</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-            `;
-
-            function classCell(realitas, t, c) {
-                let real = realitas.breakdown[c] || 0;
-                let target = Number(t.quota[c]) || 0;
-                if (real === 0 && target === 0) return `<span class="cell-zero">–</span>`;
-                let color = "var(--warning)";
-                if (real === target) color = "var(--success)";
-                else if (real > target) color = "var(--danger)";
-                return `<span style="color:${color}; font-weight:700;">${real}</span><span style="color:var(--text-mute); font-weight:500;">/${target}</span>`;
-            }
-
-            teachers.forEach(t => {
-                let realitas = hitungRealisasi[t.kg] || { globalTotal: 0, breakdown: { "VII":0, "VIII A":0, "VIII B":0, "IX A":0, "IX B":0 } };
-                let terisi = realitas.globalTotal;
-                let totalKuota = calcTotal(t);
-                
-                let statusBadge = "";
-                if (terisi === totalKuota) {
-                    statusBadge = `<span class="badge-dash bg-done">Pas</span>`;
-                } else if (terisi > totalKuota) {
-                    statusBadge = `<span class="badge-dash bg-over">+${terisi - totalKuota} JP</span>`;
-                } else {
-                    statusBadge = `<span class="badge-dash bg-warning">-${totalKuota - terisi} JP</span>`;
-                }
-
-                dashHTML += `
-                    <tr>
-                        <td style="font-weight:bold; background:#f8f9fa;">${t.kg}</td>
-                        <td style="text-align:left; padding-left:10px; font-weight: 500;">${t.nama}</td>
-                        <td style="text-align:left; padding-left:10px; color:#555;">${t.mapel}</td>
-                        <td>${classCell(realitas, t, "VII")}</td>
-                        <td>${classCell(realitas, t, "VIII A")}</td>
-                        <td>${classCell(realitas, t, "VIII B")}</td>
-                        <td>${classCell(realitas, t, "IX A")}</td>
-                        <td>${classCell(realitas, t, "IX B")}</td>
-                        <td style="font-weight:bold; color:var(--info); background:#f1f2f6;">${terisi} JP</td>
-                        <td style="font-weight:bold; color:var(--primary);">${totalKuota} JP</td>
-                        <td>${statusBadge}</td>
-                    </tr>
-                `;
-            });
-
-            dashHTML += `
-                        </tbody>
-                    </table>
-                </div>
-            `;
-            container.innerHTML = dashHTML;
-        }
-
-        function renderScheduleTable(container) {
-            let tableHTML = `
-                <h2>🗓️ Jadwal Pelajaran Kelas ${currentClass}</h2>
-                <table style="margin-top:10px;">
-                    <thead>
-                        <tr>
-                            <th>Jam</th>
-                            <th>Waktu</th>
-                            <th>Sabtu</th>
-                            <th>Ahad</th>
-                            <th>Senin</th>
-                            <th>Selasa</th>
-                            <th>Rabu</th>
-                            <th>Kamis</th>
-                        </tr>
-                    </thead>
-                    <tbody id="schedule-tbody"></tbody>
-                </table>
-                <div class="hint-text">*Isikan cell dengan KODE GURU (KG). Contoh: A, B, D1, F, dll. Kosongkan jika kosong. Sel <b>UP</b> (Upacara, Senin jam-1) dan sel bertanda "–" (tidak ada jam ke-9 di hari Sabtu/Rabu/Kamis) terkunci otomatis.</div>
-            `;
-            container.innerHTML = tableHTML;
-
-            const tbody = document.getElementById('schedule-tbody');
-            timeSlots.forEach(ts => {
-                const tr = document.createElement('tr');
-                
-                const tdJam = document.createElement('td');
-                tdJam.innerText = ts.jam;
-                tr.appendChild(tdJam);
-
-                const tdWaktu = document.createElement('td');
-                tdWaktu.className = "time-col";
-                tdWaktu.innerText = ts.waktu;
-                tr.appendChild(tdWaktu);
-
-                if (ts.isBreak) {
-                    const tdBreak = document.createElement('td');
-                    tdBreak.colSpan = days.length;
-                    tdBreak.className = "cell-break";
-                    tdBreak.innerText = `☕ ${ts.label} ☕`;
-                    tr.appendChild(tdBreak);
-                } else {
-                    days.forEach(day => {
-                        const td = document.createElement('td');
-
-                        if (ts.jam === 1 && day === "Senin") {
-                            // UPACARA BENDERA: terkunci otomatis, tidak bisa diedit
-                            td.className = "cell-upacara";
-                            td.innerHTML = `🚩 <b>${UPACARA_CODE}</b>`;
-                            td.title = "Upacara Bendera setiap Senin jam ke-1 (otomatis terkunci)";
-                        } else if (ts.jam === 9 && NO_NINTH_HOUR_DAYS.includes(day)) {
-                            // TIDAK ADA JAM KE-9: khusus Sabtu, Rabu, Kamis (KBM hanya 8 jam)
-                            td.className = "cell-locked";
-                            td.innerHTML = `<span class="locked-dash">–</span>`;
-                            td.title = "Tidak ada jam pelajaran ke-9 pada hari ini (KBM hanya 8 jam)";
-                        } else {
-                            const val = scheduleStore[currentClass][ts.jam][day] || "";
-
-                            const input = document.createElement('input');
-                            input.type = "text";
-                            input.className = "cell-input";
-                            input.value = val;
-                            input.dataset.jam = ts.jam;
-                            input.dataset.day = day;
-
-                            input.oninput = (e) => handleInputChange(e.target, ts.jam, day);
-
-                            td.appendChild(input);
-                        }
-
-                        tr.appendChild(td);
-                    });
-                }
-                tbody.appendChild(tr);
-            });
-            validateAll(); 
-        }
-
-        function renderPiketTable(container) {
-            let tableHTML = `
-                <h2>📌 Pengaturan Pembagian Piket Harian Guru</h2>
-                <table style="margin-top:10px;">
-                    <thead>
-                        <tr>
-                            <th style="background-color:#e67e22;">Jam</th>
-                            <th style="background-color:#e67e22;">Waktu</th>
-                            <th style="background-color:#e67e22;">Sabtu</th>
-                            <th style="background-color:#e67e22;">Ahad</th>
-                            <th style="background-color:#e67e22;">Senin</th>
-                            <th style="background-color:#e67e22;">Selasa</th>
-                            <th style="background-color:#e67e22;">Rabu</th>
-                            <th style="background-color:#e67e22;">Kamis</th>
-                        </tr>
-                    </thead>
-                    <tbody id="schedule-tbody"></tbody>
-                </table>
-                <div class="hint-text">*Bisa diisi <b>lebih dari satu guru dalam jam yang sama</b>, pisahkan dengan tanda koma. Contoh: <b>A,K</b>. Kosongkan jika tidak ada piket. Sistem otomatis mendeteksi bentrok jika salah satu guru tersebut sedang mengajar di kelas lain.</div>
-            `;
-            container.innerHTML = tableHTML;
-
-            const tbody = document.getElementById('schedule-tbody');
-            piketTimeSlots.forEach(ts => {
-                const tr = document.createElement('tr');
-                
-                const tdJam = document.createElement('td');
-                tdJam.innerText = ts.jam;
-                tr.appendChild(tdJam);
-
-                const tdWaktu = document.createElement('td');
-                tdWaktu.className = "time-col";
-                tdWaktu.innerText = ts.waktu;
-                tr.appendChild(tdWaktu);
-
-                if (ts.isBreak) {
-                    const tdBreak = document.createElement('td');
-                    tdBreak.colSpan = days.length;
-                    tdBreak.className = "cell-break";
-                    tdBreak.innerText = `☕ ${ts.label} ☕`;
-                    tr.appendChild(tdBreak);
-                } else {
-                    days.forEach(day => {
-                        const td = document.createElement('td');
-                        const val = scheduleStore["PIKET"][ts.jam][day] || "";
-
-                        const input = document.createElement('input');
-                        input.type = "text";
-                        input.className = "cell-input";
-                        input.placeholder = "cth: A,K";
-                        input.value = val;
-                        input.dataset.jam = ts.jam;
-                        input.dataset.day = day;
-
-                        input.oninput = (e) => handleInputChange(e.target, ts.jam, day);
-
-                        td.appendChild(input);
-                        tr.appendChild(td);
-                    });
-                }
-                tbody.appendChild(tr);
-            });
-            validateAll(); 
-        }
-
-        /* ===================== EDITOR DATA GURU & KUOTA ===================== */
-
-        function renderGuruEditor(container) {
-            let html = `
-                <div class="dashboard-container">
-                    <h2>🧑‍🏫 Kelola Data Guru & Kuota Mengajar</h2>
-                    <div class="template-badge" style="background:#e6f7f5; color:#0f766e; border-left-color:var(--accent);">
-                        ✏️ Ubah kode guru (KG), nama, mata pelajaran, and kuota jam per kelas di sini. <b>Kolom "Total" dihitung otomatis</b> dari kuota tiap kelas. Jangan lupa klik <b>Simpan Data Guru</b>.
-                    </div>
-                    <div style="overflow-x:auto;">
-                    <table style="margin-top:8px;" id="guru-editor-table">
-                        <thead>
-                            <tr>
-                                <th style="min-width:80px;">Kode</th>
-                                <th style="min-width:230px;">Nama Guru</th>
-                                <th style="min-width:170px;">Mata Pelajaran</th>
-                                <th>VII</th><th>VIII A</th><th>VIII B</th><th>IX A</th><th>IX B</th>
-                                <th style="min-width:100px;">Total (Otomatis)</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="guru-editor-tbody"></tbody>
-                    </table>
-                    </div>
-                    <div style="display:flex; gap:10px; margin-top:16px; flex-wrap:wrap;">
-                        <button class="btn btn-primary" style="background:var(--info); color:white; box-shadow:none;" onclick="addGuruRow()">➕ Tambah Guru</button>
-                        <button class="btn btn-success" onclick="saveGuruEditor()">💾 Simpan Data Guru</button>
-                        <button class="btn btn-danger" onclick="resetGuruDefault()">↩️ Kembalikan ke Default</button>
-                    </div>
-                    <div class="hint-text">*Kode Guru (KG) harus unik — kode inilah yang diketik di kolom jadwal &amp; tabel piket. Hapus baris lalu klik Simpan untuk menghapus guru tersebut.</div>
-                </div>
-            `;
-            container.innerHTML = html;
-            const tbody = document.getElementById('guru-editor-tbody');
-            teachers.forEach(t => tbody.appendChild(buildGuruRow(t)));
-        }
-
-        function buildGuruRow(t) {
-            const tr = document.createElement('tr');
-            const q = t.quota || {};
+        for (const [kode, data] of Object.entries(dbSiswa)) {
+            const tr = document.createElement("tr");
             tr.innerHTML = `
-                <td><input type="text" class="cell-input g-kode" value="${t.kg || ''}" style="font-size:13px;"></td>
-                <td><input type="text" class="cell-input g-nama" value="${(t.nama || '').replace(/"/g,'&quot;')}" style="text-transform:none; text-align:left; font-weight:500; font-size:13px;"></td>
-                <td><input type="text" class="cell-input g-mapel" value="${(t.mapel || '').replace(/"/g,'&quot;')}" style="text-transform:none; text-align:left; font-size:13px;"></td>
-                <td><input type="number" min="0" class="cell-input g-quota" data-cls="VII" value="${q['VII'] || 0}"></td>
-                <td><input type="number" min="0" class="cell-input g-quota" data-cls="VIII A" value="${q['VIII A'] || 0}"></td>
-                <td><input type="number" min="0" class="cell-input g-quota" data-cls="VIII B" value="${q['VIII B'] || 0}"></td>
-                <td><input type="number" min="0" class="cell-input g-quota" data-cls="IX A" value="${q['IX A'] || 0}"></td>
-                <td><input type="number" min="0" class="cell-input g-quota" data-cls="IX B" value="${q['IX B'] || 0}"></td>
-                <td class="g-total" style="font-weight:bold; color:var(--primary);">${calcTotal(t)} JP</td>
-                <td><button class="btn btn-danger" style="padding:6px 10px; box-shadow:none;" onclick="this.closest('tr').remove()">🗑️</button></td>
+                <td><strong>${kode}</strong></td>
+                <td>${data.nama}</td>
+                <td>${data.kelas}</td>
+                <td>${data.peringkat}</td>
+                <td>${data.pg}/75</td>
+                <td>${data.essai}/25</td>
+                <td><strong>${data.total}</strong></td>
             `;
-            tr.querySelectorAll('.g-quota').forEach(inp => {
-                inp.addEventListener('input', () => {
-                    let sum = 0;
-                    tr.querySelectorAll('.g-quota').forEach(i2 => sum += (Number(i2.value) || 0));
-                    tr.querySelector('.g-total').innerText = sum + " JP";
-                });
-            });
-            return tr;
+            tbody.appendChild(tr);
         }
+    }
 
-        function addGuruRow() {
-            const tbody = document.getElementById('guru-editor-tbody');
-            const emptyTeacher = { kg: "", nama: "", mapel: "", quota: { "VII": 0, "VIII A": 0, "VIII B": 0, "IX A": 0, "IX B": 0 } };
-            const row = buildGuruRow(emptyTeacher);
-            tbody.appendChild(row);
-            row.querySelector('.g-kode').focus();
-            row.scrollIntoView({ behavior: "smooth", block: "center" });
-        }
+    function filterTabelAdmin() {
+        const input = document.getElementById("cariAdmin").value.toUpperCase();
+        const trs = document.getElementById("tbodyAdmin").getElementsByTagName("tr");
 
-        function saveGuruEditor() {
-            const rows = document.querySelectorAll('#guru-editor-tbody tr');
-            let newTeachers = [];
-            let usedKodes = new Set();
-            let errorMsg = "";
-
-            rows.forEach(tr => {
-                const kode = tr.querySelector('.g-kode').value.trim().toUpperCase();
-                const nama = tr.querySelector('.g-nama').value.trim();
-                const mapel = tr.querySelector('.g-mapel').value.trim();
-
-                if (!kode && !nama && !mapel) return;
-
-                if (!kode || !nama) {
-                    errorMsg += `• Baris "${nama || kode || '(kosong)'}" belum lengkap (kode/nama wajib diisi).\n`;
-                    return;
-                }
-                if (usedKodes.has(kode)) {
-                    errorMsg += `• Kode Guru "${kode}" dobel, gunakan kode yang unik.\n`;
-                    return;
-                }
-                usedKodes.add(kode);
-
-                let quota = {};
-                tr.querySelectorAll('.g-quota').forEach(inp => {
-                    quota[inp.dataset.cls] = Number(inp.value) || 0;
-                });
-
-                newTeachers.push({ kg: kode, nama, mapel, quota, total: calcTotal({quota}) });
-            });
-
-            if (errorMsg) {
-                alert("⚠️ Data belum bisa disimpan, periksa dulu:\n\n" + errorMsg);
-                return;
-            }
-
-            teachers = newTeachers;
-            saveTeachers();
-            validateAll();
-            alert("✅ Data guru & kuota berhasil disimpan!");
-            renderWorkspace();
-        }
-
-        function resetGuruDefault() {
-            if (confirm("Kembalikan seluruh data guru & kuota ke pengaturan bawaan? Perubahan pada tabel ini yang belum disimpan akan hilang.")) {
-                teachers = JSON.parse(JSON.stringify(defaultTeachers));
-                saveTeachers();
-                validateAll();
-                renderWorkspace();
-            }
-        }
-
-        /* ===================================================================== */
-
-        function handleInputChange(inputElement, jam, day) {
-            let val = inputElement.value.toUpperCase().trim();
-            scheduleStore[currentClass][jam][day] = val;
-            
-            if(!modifiedClasses[currentClass]) {
-                modifiedClasses[currentClass] = true;
-                renderTabs();
-            }
-
-            localStorage.setItem('mts_schedule_data', JSON.stringify(scheduleStore));
-            localStorage.setItem('mts_modified_flags', JSON.stringify(modifiedClasses));
-            
-            validateAll(); 
-        }
-
-        // SISTEM VALIDASI MULTI-FUNGSI: BENTROK JAM & EVALUASI KUOTA KELAS
-        function validateAll() {
-            let conflicts = [];
-            let currentClassOverQuotaTeachers = new Set(); // Menyimpan KG yang overload di kelas aktif
-            
-            // Bersihkan indikator error sebelumnya di halaman aktif
-            const inputs = document.querySelectorAll('.cell-input');
-            inputs.forEach(inp => inp.classList.remove('cell-conflict'));
-
-            // HITUNG REALISASI MENGANJAR GURU TIAP KELAS UNTUK VALIDASI KUOTA MAKSIMAL KELAS
-            let realisasiPerKelas = {}; // Struktur: { "VII": { "A": 3, "B": 2 }, "VIII A": {...} }
-            classes.forEach(c => {
-                realisasiPerKelas[c] = {};
-                timeSlots.forEach(ts => {
-                    if(ts.isBreak) return;
-                    days.forEach(day => {
-                        // Lewati sel yang terkunci aturan tetap: Upacara (Senin jam-1) & tidak ada jam ke-9 (Sabtu/Rabu/Kamis)
-                        if ((ts.jam === 1 && day === "Senin") || (ts.jam === 9 && NO_NINTH_HOUR_DAYS.includes(day))) return;
-                        let teacher = (scheduleStore[c][ts.jam][day] || "").toUpperCase().trim();
-                        if(teacher && teacher !== "ISTIRAHAT" && teacher !== "ISTIRAHAT/MBG" && teacher !== "JAMA'AH" && teacher !== "JAMAAH" && teacher !== UPACARA_CODE) {
-                            realisasiPerKelas[c][teacher] = (realisasiPerKelas[c][teacher] || 0) + 1;
-                        }
-                    });
-                });
-            });
-
-            // 1. EVALUASI KUOTA ALOKASI KELAS (Target 0 JP & Batas Maksimal JP Per Kelas)
-            classes.forEach(c => {
-                for (let teacher in realisasiPerKelas[c]) {
-                    let totalTerinput = realisasiPerKelas[c][teacher];
-                    let foundT = teachers.find(t => t.kg === teacher);
-                    if(foundT) {
-                        let kuotaKelas = Number(foundT.quota[c]) || 0;
-                        
-                        // Kasus A: Jika target kuotanya 0 tapi tetap dimasukkan
-                        if(kuotaKelas === 0) {
-                            conflicts.push({
-                                type: "SALAH_ALOKASI", teacher: teacher, nama: foundT.nama, class: c
-                            });
-                            if(currentClass === c) currentClassOverQuotaTeachers.add(teacher);
-                        } 
-                        // Kasus B: Jika kuotanya ada (misal 2 JP) tapi diinput berlebih (misal 3 JP atau lebih)
-                        else if (totalTerinput > kuotaKelas) {
-                            conflicts.push({
-                                type: "LEBIH_KUOTA_KELAS", teacher: teacher, nama: foundT.nama, class: c, terinput: totalTerinput, target: kuotaKelas
-                            });
-                            if(currentClass === c) currentClassOverQuotaTeachers.add(teacher);
-                        }
-                    }
-                }
-            });
-
-            // 2. EVALUASI BENTROK JADWAL (REGULER VS PIKET GURU)
-            // CATATAN PENTING: Satu guru (nama) bisa punya BEBERAPA kode KG berbeda
-            // jika mengampu lebih dari 1 mapel (mis. Nurul Winayanti = J1 & J2).
-            // Deteksi bentrok HARUS dikelompokkan berdasarkan ORANGNYA (nama guru),
-            // bukan berdasarkan kode KG mentah, karena satu orang tetap tidak bisa
-            // mengajar di 2 tempat sekaligus meskipun kode KG-nya berbeda.
-            function getTeacherIdentity(code) {
-                let t = teachers.find(x => x.kg === code);
-                // Jika kode dikenali di data guru, kelompokkan pakai NAMA (agar J1 & J2 nyambung).
-                // Jika kode tidak dikenali (guru custom/luar data), fallback pakai kode itu sendiri.
-                return t ? t.nama : code;
-            }
-
-            piketTimeSlots.forEach(ts => {
-                if(ts.isBreak) return;
-                days.forEach(day => {
-                    let occupation = {}; // key: identitas guru (nama), value: { classes: [], codes: Set() }
-
-                    // Lewati sel terkunci aturan tetap: Upacara (Senin jam-1) & tidak ada jam ke-9 (Sabtu/Rabu/Kamis)
-                    let isLockedRegularSlot = (ts.jam === 1 && day === "Senin") || (ts.jam === 9 && NO_NINTH_HOUR_DAYS.includes(day));
-
-                    // Cek di rombel reguler
-                    if (!isLockedRegularSlot) {
-                        classes.forEach(c => {
-                            if(scheduleStore[c] && scheduleStore[c][ts.jam]) {
-                                let teacher = (scheduleStore[c][ts.jam][day] || "").toUpperCase().trim();
-                                if (teacher && teacher !== "ISTIRAHAT" && teacher !== "ISTIRAHAT/MBG" && teacher !== "JAMA'AH" && teacher !== "JAMAAH" && teacher !== UPACARA_CODE) {
-                                    let identity = getTeacherIdentity(teacher);
-                                    if (!occupation[identity]) occupation[identity] = { classes: [], codes: new Set() };
-                                    occupation[identity].classes.push(`Kelas ${c}`);
-                                    occupation[identity].codes.add(teacher);
-                                }
-                            }
-                        });
-                    }
-
-                    // Cek di tabel piket harian (satu jam bisa diisi lebih dari 1 guru sekaligus,
-                    // nilainya tersimpan sebagai "KODE1,KODE2" sehingga perlu dipisah dulu)
-                    if(scheduleStore["PIKET"] && scheduleStore["PIKET"][ts.jam]) {
-                        let piketRaw = (scheduleStore["PIKET"][ts.jam][day] || "").toUpperCase().trim();
-                        if (piketRaw) {
-                            let piketCodes = piketRaw.split(/[,/]/)
-                                .map(x => x.trim())
-                                .filter(x => x !== "" && x !== "ISTIRAHAT" && x !== "JAMA'AH" && x !== "JAMAAH");
-
-                            piketCodes.forEach(piketTeacher => {
-                                let identity = getTeacherIdentity(piketTeacher);
-                                if (!occupation[identity]) occupation[identity] = { classes: [], codes: new Set() };
-                                if (!occupation[identity].classes.includes("Piket Guru")) {
-                                    occupation[identity].classes.push("Piket Guru");
-                                }
-                                occupation[identity].codes.add(piketTeacher);
-                            });
-                        }
-                    }
-
-                    // Evaluasi bentrok jam mengajar bersamaan
-                    for (let identity in occupation) {
-                        if (occupation[identity].classes.length > 1) {
-                            let codesArr = Array.from(occupation[identity].codes);
-                            conflicts.push({
-                                type: "BENTROK", teacher: codesArr.join('/'), nama: identity, day: day, jam: ts.jam, waktu: ts.waktu, classes: occupation[identity].classes
-                            });
-
-                            // Tandai merah cell yang bentrok jamnya
-                            if (currentClass !== "DASHBOARD" && currentClass !== "GURU") {
-                                if (currentClass === "PIKET" && occupation[identity].classes.includes("Piket Guru")) {
-                                    const targetInput = document.querySelector(`input[data-jam="${ts.jam}"][data-day="${day}"]`);
-                                    if (targetInput) {
-                                        const inputCodes = targetInput.value.toUpperCase().split(/[,/]/).map(x => x.trim()).filter(x => x !== "");
-                                        if (inputCodes.some(code => codesArr.includes(code))) {
-                                            targetInput.classList.add('cell-conflict');
-                                        }
-                                    }
-                                } else if (occupation[identity].classes.includes(`Kelas ${currentClass}`)) {
-                                    const targetInput = document.querySelector(`input[data-jam="${ts.jam}"][data-day="${day}"]`);
-                                    if (targetInput && codesArr.includes(targetInput.value.toUpperCase().trim())) {
-                                        targetInput.classList.add('cell-conflict');
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-            });
-
-            // WARNAI CELL DENGAN KODE GURU YANG OVER-KUOTA DI KELAS AKTIF
-            if (currentClass !== "DASHBOARD" && currentClass !== "GURU" && currentClass !== "PIKET") {
-                currentClassOverQuotaTeachers.forEach(teacherCode => {
-                    const matchedInputs = document.querySelectorAll(`.cell-input`);
-                    matchedInputs.forEach(inp => {
-                        if (inp.value.toUpperCase().trim() === teacherCode) {
-                            inp.classList.add('cell-conflict');
-                        }
-                    });
-                });
-            }
-
-            // 3. TAMPILKAN PADA PANEL NOTIFIKASI
-            const panel = document.getElementById('conflict-panel');
-            const listContainer = document.getElementById('conflict-list');
-            
-            if (conflicts.length > 0) {
-                panel.style.display = "flex";
-                listContainer.innerHTML = "";
-                conflicts.forEach(conf => {
-                    const item = document.createElement('div');
-                    item.className = "conflict-item";
-                    // Untuk BENTROK, nama guru sudah tersimpan langsung di conf.nama (identitas guru),
-                    // karena conf.teacher bisa berupa gabungan beberapa kode KG (mis. "J1/J2").
-                    let namaGuru = conf.type === "BENTROK"
-                        ? conf.nama
-                        : ((teachers.find(t => t.kg === conf.teacher)?.nama) || `Guru Kode ${conf.teacher}`);
-                    
-                    if(conf.type === "BENTROK") {
-                        item.innerHTML = `🚨 <b>[JADWAL BENTROK]</b>: <b>${namaGuru} (KG: ${conf.teacher})</b> terdeteksi bentrok mengajar di <b>[${conf.classes.join(' & ')}]</b> pada Hari <b>${conf.day}</b>, Jam ke-${conf.jam} (${conf.waktu}).`;
-                    } else if (conf.type === "SALAH_ALOKASI") {
-                        item.innerHTML = `❌ <b>[SALAH ALOKASI KELAS]</b>: <b>${namaGuru} (KG: ${conf.teacher})</b> diinput di <b>Kelas ${conf.class}</b>, padahal target kuota mengajarnya di kelas tersebut adalah <b>0 JP</b>.`;
-                    } else if (conf.type === "LEBIH_KUOTA_KELAS") {
-                        item.innerHTML = `⚠️ <b>[KUOTA KELAS MELEBIHI TARGET]</b>: Total input jam mengajar <b>${namaGuru} (KG: ${conf.teacher})</b> di <b>Kelas ${conf.class}</b> terhitung <b>${conf.terinput} JP</b>, padahal kuota maksimal kelas tersebut hanya <b>${conf.target} JP</b>.`;
-                    }
-                    
-                    listContainer.appendChild(item);
-                });
-            } else {
-                panel.style.display = "none";
-            }
-        }
-
-        function clearAll() {
-            if(confirm("Apakah Anda yakin ingin mengosongkan seluruh isian tabel jadwal?")) {
-                localStorage.removeItem('mts_schedule_data');
-                localStorage.removeItem('mts_modified_flags');
-                initStore();
-                initApp();
-            }
-        }
-
-        function importExcel(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const data = new Uint8Array(e.target.result);
-                importedWorkbook = XLSX.read(data, { type: 'array', cellStyles: true, cellNF: true });
-                
-                targetSheetName = importedWorkbook.SheetNames.find(n => n.includes('Upacara') || n.includes('Jdwl') || n.includes('2026'));
-                if(!targetSheetName) {
-                    targetSheetName = importedWorkbook.SheetNames[0];
-                }
-
-                const sheet = importedWorkbook.Sheets[targetSheetName];
-                
-                classes.forEach(c => {
-                    let startRow = classRowMapping[c];
-                    timeSlots.forEach(ts => {
-                        if(!ts.isBreak) {
-                            let excelRow = startRow + jamOffsetMapping[ts.jam];
-                            days.forEach(day => {
-                                let excelCol = dayColMapping[day];
-                                let cellRef = XLSX.utils.encode_cell({ r: excelRow - 1, c: excelCol });
-                                if(sheet[cellRef] && sheet[cellRef].v !== undefined) {
-                                    let rawVal = String(sheet[cellRef].v).toUpperCase().trim();
-                                    if(rawVal !== "ISTIRAHAT" && rawVal !== "ISTIRAHAT/MBG" && rawVal !== "JAMA'AH" && rawVal !== "JAMAAH") {
-                                        scheduleStore[c][ts.jam][day] = rawVal;
-                                    }
-                                }
-                            });
-                        }
-                    });
-                });
-
-                let piketStartRow = classRowMapping["PIKET"];
-                piketTimeSlots.forEach(ts => {
-                    if(!ts.isBreak) {
-                        let excelRow = piketStartRow + piketOffsetMapping[ts.jam];
-                        days.forEach(day => {
-                            let excelCol = dayColMapping[day];
-                            let cellRef = XLSX.utils.encode_cell({ r: excelRow - 1, c: excelCol });
-                            if(sheet[cellRef] && sheet[cellRef].v !== undefined) {
-                                let rawVal = String(sheet[cellRef].v).toUpperCase().trim();
-                                if(rawVal !== "ISTIRAHAT" && rawVal !== "ISTIRAHAT/MBG" && rawVal !== "JAMA'AH" && rawVal !== "JAMAAH") {
-                                    scheduleStore["PIKET"][ts.jam][day] = rawVal;
-                                }
-                            }
-                        });
-                    }
-                });
-
-                localStorage.setItem('mts_schedule_data', JSON.stringify(scheduleStore));
-                sessionStorage.setItem('excel_loaded', 'true');
-                
-                normalizeFixedSlots();
-                localStorage.setItem('mts_schedule_data', JSON.stringify(scheduleStore));
-
-                enableExportButton();
-                initApp();
-                validateAll(); 
-
-                alert("🎉 Berkas Berhasil Terkunci! Data Excel sinkron dengan tata letak analitik dashboard.");
-            };
-            reader.readAsArrayBuffer(file);
-        }
-
-        function exportSmartExcel() {
-            if (!importedWorkbook || !targetSheetName) {
-                alert("Harap upload file berkas Excel dasar Anda terlebih dahulu pada langkah (1)!");
-                return;
-            }
-
-            const sheet = importedWorkbook.Sheets[targetSheetName];
-            let updateCount = 0;
-
-            classes.forEach(c => {
-                if (modifiedClasses[c] === true) {
-                    let startRow = classRowMapping[c]; 
-                    timeSlots.forEach(ts => {
-                        if(!ts.isBreak) {
-                            let excelRow = startRow + jamOffsetMapping[ts.jam];
-                            days.forEach(day => {
-                                let excelCol = dayColMapping[day];
-                                let cellRef = XLSX.utils.encode_cell({ r: excelRow - 1, c: excelCol });
-                                let currentVal = scheduleStore[c][ts.jam][day] || "";
-                                
-                                if(!sheet[cellRef]) {
-                                    sheet[cellRef] = { t: 's', v: currentVal };
-                                } else {
-                                    sheet[cellRef].v = currentVal;
-                                    sheet[cellRef].t = 's';
-                                }
-                            });
-                        }
-                    });
-                    updateCount++;
-                }
-            });
-
-            if (modifiedClasses["PIKET"] === true) {
-                let piketStartRow = classRowMapping["PIKET"];
-                piketTimeSlots.forEach(ts => {
-                    if(!ts.isBreak) {
-                        let excelRow = piketStartRow + piketOffsetMapping[ts.jam];
-                        days.forEach(day => {
-                            let excelCol = dayColMapping[day];
-                            let cellRef = XLSX.utils.encode_cell({ r: excelRow - 1, c: excelCol });
-                            let currentVal = scheduleStore["PIKET"][ts.jam][day] || "";
-                            
-                            if(!sheet[cellRef]) {
-                                sheet[cellRef] = { t: 's', v: currentVal };
-                            } else {
-                                sheet[cellRef].v = currentVal;
-                                sheet[cellRef].t = 's';
-                            }
-                        });
-                    }
-                });
-                updateCount++;
-            }
-
-            if(updateCount === 0) {
-                if(!confirm("Anda belum mengedit komponen kelas atau piket mana pun. Berkas unduhan akan identik bawaan. Lanjutkan?")) {
-                    return;
+        for (let i = 0; i < trs.length; i++) {
+            const tdKode = trs[i].getElementsByTagName("td")[0];
+            const tdNama = trs[i].getElementsByTagName("td")[1];
+            if (tdKode || tdNama) {
+                const txtKode = tdKode.textContent || tdKode.innerText;
+                const txtNama = tdNama.textContent || tdNama.innerText;
+                if (txtKode.toUpperCase().indexOf(input) > -1 || txtNama.toUpperCase().indexOf(input) > -1) {
+                    trs[i].style.display = "";
+                } else {
+                    trs[i].style.display = "none";
                 }
             }
-
-            const wbout = XLSX.write(importedWorkbook, { bookType: 'xlsx', type: 'array' });
-            const blob = new Blob([wbout], { type: "application/octet-stream" });
-            const url = URL.createObjectURL(blob);
-            
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = `Form Jadwal Pelajaran 2026-2027_Updated.xlsx`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
         }
+    }
 
-        window.onload = initApp;
-    </script>
+    function kembaliKeInput() {
+        document.getElementById("mainCard").classList.remove("admin-mode");
+        document.getElementById("resultSection").style.display = "none";
+        document.getElementById("adminDashboardSection").style.display = "none";
+        document.getElementById("searchSection").style.display = "block";
+        document.getElementById("inputKode").value = "";
+        document.getElementById("errorMsg").style.display = "none";
+    }
+</script>
+
 </body>
 </html>
